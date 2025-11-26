@@ -1,15 +1,20 @@
 import { createBrowserRouter } from 'react-router-dom';
 import WeeklyView from './pages/WeeklyView';
-import Auth from './pages/Auth';
+import { ProtectedRoute } from './components/ProtectedRoute';
+import { AuthRedirect } from './components/AuthRedirect';
 
 export const router = createBrowserRouter([
   {
     path: '/',
-    element: <WeeklyView />,
+    element: (
+      <ProtectedRoute>
+        <WeeklyView />
+      </ProtectedRoute>
+    ),
   },
   {
     path: '/auth',
-    element: <Auth />,
+    element: <AuthRedirect />,
   },
 ]);
 
