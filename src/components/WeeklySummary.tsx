@@ -132,7 +132,7 @@ export function WeeklySummary({ summary, onClick, onAddEntry }: WeeklySummaryPro
           }}
           className="w-full px-4 py-2 text-sm text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium transition-colors"
         >
-          Manage Entries →
+          Manage Activities →
         </button>
       </div>
     </div>

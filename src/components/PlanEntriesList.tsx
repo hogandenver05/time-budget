@@ -56,7 +56,7 @@ export function PlanEntriesList({ entries, categories, onEdit, onDelete }: PlanE
 
   return (
     <div>
-      <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Your Plan Entries</h2>
+      <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Your Activities</h2>
       <div className="space-y-3">
         {entries.map((entry) => {
           const category = categories.get(entry.categoryId);

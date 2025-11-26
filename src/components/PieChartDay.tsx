@@ -84,7 +84,7 @@ export function PieChartDay({ dayBreakdown, dayName }: PieChartDayProps) {
           </PieChart>
         </ResponsiveContainer>
       </div>
-      {/* Legend - no scrolling, wraps naturally */}
+      {/* Legend */}
       <div className="space-y-1">
         {chartData.map((entry, index) => (
           <div

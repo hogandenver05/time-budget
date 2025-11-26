@@ -191,10 +191,10 @@ function PlanEntriesPage() {
             Back to Weekly View
           </button>
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-            Manage Plan Entries
+            Manage Activities
           </h1>
           <p className="text-gray-600 dark:text-gray-400">
-            Edit, delete, or add new plan entries
+            Edit, delete, or add new activities
           </p>
         </div>
         <button
@@ -214,7 +214,7 @@ function PlanEntriesPage() {
               d="M12 4v16m8-8H4"
             />
           </svg>
-          Add Entry
+          Add Activity
         </button>
       </div>
 
