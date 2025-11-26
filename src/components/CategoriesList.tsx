@@ -23,8 +23,8 @@ export function CategoriesList() {
     try {
       setLoading(true);
       setError(null);
-      const cats = await getCategories(user.uid);
-      setCategories(cats);
+      const categories = await getCategories(user.uid);
+      setCategories(categories);
     } catch (err: any) {
       setError(err.message || 'Failed to load categories');
     } finally {

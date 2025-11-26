@@ -38,19 +38,19 @@ function WeeklyView() {
       setError(null);
 
       // Fetch categories and plan entries in parallel
-      const [cats, entries] = await Promise.all([
+      const [categories, entries] = await Promise.all([
         getCategories(user.uid),
         getPlanEntries(user.uid),
       ]);
 
       // Convert categories array to Map for efficient lookups
       const categoriesMap = new Map<string, Category & { id: string }>();
-      cats.forEach((cat) => {
+      categories.forEach((cat) => {
         categoriesMap.set(cat.id, cat);
       });
 
       setCategories(categoriesMap);
-      setCategoriesList(cats);
+      setCategoriesList(categories);
       setPlanEntries(entries);
 
       // Aggregate plan entries into daily breakdowns
