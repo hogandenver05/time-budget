@@ -2,10 +2,11 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { logOut } from '../firebase/auth';
-import { getCategories } from '../firebase/firestore';
+import { getCategories, createCategory, createPlanEntry } from '../firebase/firestore';
 import { getPlanEntries } from '../firebase/firestore';
 import { aggregatePlanEntries } from '../utils/aggregation';
 import { PieChartDay } from '../components/PieChartDay';
+import { AddEntryWizard, type WizardState } from '../components/AddEntryWizard/AddEntryWizard';
 import type { Category } from '../types/category';
 import type { PlanEntry } from '../types/plan';
 import type { DayBreakdown } from '../utils/aggregation';
@@ -16,10 +17,12 @@ function WeeklyView() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [, setCategories] = useState<Map<string, Category & { id: string }>>(new Map());
+  const [categoriesList, setCategoriesList] = useState<(Category & { id: string })[]>([]);
   const [, setPlanEntries] = useState<(PlanEntry & { id: string })[]>([]);
   const [dayBreakdowns, setDayBreakdowns] = useState<DayBreakdown[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [showWizard, setShowWizard] = useState(false);
 
   useEffect(() => {
     if (user) {
@@ -47,6 +50,7 @@ function WeeklyView() {
       });
 
       setCategories(categoriesMap);
+      setCategoriesList(cats);
       setPlanEntries(entries);
 
       // Aggregate plan entries into daily breakdowns
@@ -65,6 +69,46 @@ function WeeklyView() {
       navigate('/auth');
     } catch (error) {
       console.error('Error signing out:', error);
+    }
+  };
+
+  const handleWizardComplete = async (wizardState: WizardState) => {
+    if (!user) return;
+
+    try {
+      setError(null);
+
+      // Step 1: Create category if it's a new one
+      let categoryId = wizardState.categoryId;
+      if (!categoryId && wizardState.categoryName) {
+        categoryId = await createCategory(user.uid, {
+          name: wizardState.categoryName,
+          color: wizardState.categoryColor,
+          builtIn: false,
+        });
+      }
+
+      if (!categoryId) {
+        throw new Error('Category is required');
+      }
+
+      // Step 2: Create plan entry
+      await createPlanEntry(user.uid, {
+        categoryId,
+        label: wizardState.label || undefined,
+        priority: wizardState.priority!,
+        daysOfWeek: wizardState.daysOfWeek,
+        minutesPerDay: wizardState.minutesPerDay,
+        startTimeLocal: wizardState.startTimeLocal || undefined,
+        endTimeLocal: wizardState.endTimeLocal || undefined,
+      });
+
+      // Close wizard and refresh data
+      setShowWizard(false);
+      await loadData();
+    } catch (err: any) {
+      setError(err.message || 'Failed to create plan entry');
+      throw err; // Re-throw so wizard can handle it
     }
   };
 
@@ -145,9 +189,10 @@ function WeeklyView() {
         ))}
       </div>
 
-      {/* Add to Week Button Placeholder */}
+      {/* Add to Week Button */}
       <div style={{ textAlign: 'center', marginTop: '2rem' }}>
         <button
+          onClick={() => setShowWizard(true)}
           style={{
             padding: '0.75rem 2rem',
             fontSize: '1rem',
@@ -157,11 +202,19 @@ function WeeklyView() {
             borderRadius: '4px',
             cursor: 'pointer',
           }}
-          disabled
         >
-          Add to Week (Coming in Day 6)
+          Add to Week
         </button>
       </div>
+
+      {/* Wizard Modal */}
+      {showWizard && (
+        <AddEntryWizard
+          categories={categoriesList}
+          onClose={() => setShowWizard(false)}
+          onComplete={handleWizardComplete}
+        />
+      )}
     </div>
   );
 }
