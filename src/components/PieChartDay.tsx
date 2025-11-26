@@ -58,38 +58,55 @@ export function PieChartDay({ dayBreakdown, dayName }: PieChartDayProps) {
   }
 
   return (
-    <div className="p-4 sm:p-6 border border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 shadow-sm hover:shadow-md transition-all duration-200">
+    <div className="p-4 sm:p-6 border border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 shadow-sm hover:shadow-md transition-all duration-200 flex flex-col">
       <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 text-center">
         {dayName}
       </h3>
-      <ResponsiveContainer width="100%" height={250}>
-        <PieChart>
-          <Pie
-            data={chartData}
-            cx="50%"
-            cy="50%"
-            labelLine={false}
-            label={renderLabel}
-            outerRadius={80}
-            fill="#8884d8"
-            dataKey="value"
-          >
-            {chartData.map((entry, index) => (
-              <Cell key={`cell-${index}`} fill={entry.color} />
-            ))}
-          </Pie>
-          <Tooltip content={<CustomTooltip />} />
-          <Legend
-            verticalAlign="bottom"
-            height={36}
-            wrapperStyle={{ fontSize: '12px' }}
-            formatter={(value) => {
-              const data = chartData.find((d) => d.name === value);
-              return data ? `${value} (${formatMinutes(data.value)})` : value;
-            }}
-          />
-        </PieChart>
-      </ResponsiveContainer>
+      <div className="flex-1 min-h-0">
+        <ResponsiveContainer width="100%" height={200}>
+          <PieChart>
+            <Pie
+              data={chartData}
+              cx="50%"
+              cy="50%"
+              labelLine={false}
+              label={renderLabel}
+              outerRadius={70}
+              fill="#8884d8"
+              dataKey="value"
+            >
+              {chartData.map((entry, index) => (
+                <Cell key={`cell-${index}`} fill={entry.color} />
+              ))}
+            </Pie>
+            <Tooltip content={<CustomTooltip />} />
+          </PieChart>
+        </ResponsiveContainer>
+      </div>
+      {/* Scrollable legend */}
+      <div className="mt-3 max-h-32 overflow-y-auto">
+        <div className="space-y-1">
+          {chartData.map((entry, index) => (
+            <div
+              key={index}
+              className="flex items-center justify-between text-xs"
+            >
+              <div className="flex items-center gap-2 flex-1 min-w-0">
+                <div
+                  className="w-3 h-3 rounded-full flex-shrink-0"
+                  style={{ backgroundColor: entry.color }}
+                />
+                <span className="text-gray-700 dark:text-gray-300 truncate">
+                  {entry.name}
+                </span>
+              </div>
+              <span className="text-gray-600 dark:text-gray-400 ml-2 flex-shrink-0">
+                {formatMinutes(entry.value)}
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }

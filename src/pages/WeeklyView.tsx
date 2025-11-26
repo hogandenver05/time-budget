@@ -183,22 +183,17 @@ function WeeklyView() {
 
   return (
     <div className="space-y-8">
-      {/* Page Title */}
+      {/* Daily Breakdown - Summary first, then 7 days = 8 cards */}
       <div>
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-          Weekly Time Budget
-        </h1>
-        <p className="text-gray-600 dark:text-gray-400">
-          Plan your week and see how your time is allocated
-        </p>
-      </div>
-
-      {/* Daily Breakdown - 7 days + summary = 8 cards */}
-      <div>
-        <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
-          Daily Breakdown
-        </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 lg:gap-6">
+          {/* Summary as first card */}
+          {weeklySummary && (
+            <WeeklySummaryComponent 
+              summary={weeklySummary} 
+              onAddEntry={handleAddEntry}
+            />
+          )}
+          {/* 7 days */}
           {dayBreakdowns.map((breakdown, index) => (
             <PieChartDay
               key={breakdown.dayOfWeek}
@@ -206,35 +201,7 @@ function WeeklyView() {
               dayName={DAY_NAMES[index]}
             />
           ))}
-          {/* Summary as 8th card */}
-          {weeklySummary && (
-            <WeeklySummaryComponent summary={weeklySummary} />
-          )}
         </div>
-      </div>
-
-      {/* Add to Week Button - FAB on mobile, regular button on desktop */}
-      <div className="fixed bottom-6 right-6 sm:static sm:flex sm:justify-center sm:mt-8">
-        <button
-          onClick={handleAddEntry}
-          className="w-14 h-14 sm:w-auto sm:h-auto sm:px-6 sm:py-3 bg-primary-600 hover:bg-primary-700 text-white rounded-full sm:rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center gap-2 font-medium focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800"
-          aria-label="Add to Week"
-        >
-          <svg
-            className="w-6 h-6 sm:w-5 sm:h-5"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M12 4v16m8-8H4"
-            />
-          </svg>
-          <span className="hidden sm:inline">Add to Week</span>
-        </button>
       </div>
 
       {/* Wizard Modal */}

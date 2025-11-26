@@ -4,9 +4,10 @@ import type { WeeklySummary } from '../utils/summary';
 interface WeeklySummaryProps {
   summary: WeeklySummary;
   onClick?: () => void;
+  onAddEntry?: () => void;
 }
 
-export function WeeklySummary({ summary, onClick }: WeeklySummaryProps) {
+export function WeeklySummary({ summary, onClick, onAddEntry }: WeeklySummaryProps) {
   const navigate = useNavigate();
   
   const formatHours = (hours: number): string => {
@@ -22,7 +23,11 @@ export function WeeklySummary({ summary, onClick }: WeeklySummaryProps) {
     return `${percentage.toFixed(1)}%`;
   };
 
-  const handleClick = () => {
+  const handleClick = (e: React.MouseEvent) => {
+    // Don't navigate if clicking the button
+    if ((e.target as HTMLElement).closest('button')) {
+      return;
+    }
     if (onClick) {
       onClick();
     } else {
@@ -33,7 +38,7 @@ export function WeeklySummary({ summary, onClick }: WeeklySummaryProps) {
   return (
     <div
       onClick={handleClick}
-      className="p-4 sm:p-6 border border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer"
+      className="p-4 sm:p-6 border border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 shadow-sm hover:shadow-md transition-all duration-200"
     >
       <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 text-center">
         Week Summary
@@ -91,10 +96,44 @@ export function WeeklySummary({ summary, onClick }: WeeklySummaryProps) {
         )}
       </div>
       
-      <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700 text-center">
-        <div className="text-xs text-primary-600 dark:text-primary-400 font-medium">
-          Click to manage entries →
-        </div>
+      <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700 space-y-2">
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            if (onAddEntry) {
+              onAddEntry();
+            }
+          }}
+          className="w-full px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg shadow-sm hover:shadow-md transition-all duration-200 flex items-center justify-center gap-2 font-medium focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800"
+        >
+          <svg
+            className="w-5 h-5"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M12 4v16m8-8H4"
+            />
+          </svg>
+          Add to Week
+        </button>
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            if (onClick) {
+              onClick();
+            } else {
+              navigate('/entries');
+            }
+          }}
+          className="w-full px-4 py-2 text-sm text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium transition-colors"
+        >
+          Manage Entries →
+        </button>
       </div>
     </div>
   );
