@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../hooks/useAuth';
-import { getCategories, createCategory, createPlanEntry, updatePlanEntry, deletePlanEntry } from '../firebase/firestore';
+import { getCategories, createCategory, createPlanEntry, updatePlanEntry } from '../firebase/firestore';
 import { getPlanEntries } from '../firebase/firestore';
 import { aggregatePlanEntries } from '../utils/aggregation';
 import { calculateWeeklySummary } from '../utils/summary';
@@ -19,7 +19,6 @@ const DAY_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Frid
 function WeeklyView() {
   const { user } = useAuth();
   const [categoriesList, setCategoriesList] = useState<(Category & { id: string })[]>([]);
-  const [planEntries, setPlanEntries] = useState<(PlanEntry & { id: string })[]>([]);
   const [dayBreakdowns, setDayBreakdowns] = useState<DayBreakdown[]>([]);
   const [weeklySummary, setWeeklySummary] = useState<WeeklySummary | null>(null);
   const [loading, setLoading] = useState(true);
@@ -53,7 +52,6 @@ function WeeklyView() {
       });
 
       setCategoriesList(categories);
-      setPlanEntries(entries);
 
       // Aggregate plan entries into daily breakdowns
       const breakdowns = aggregatePlanEntries(entries, categoriesMap);
