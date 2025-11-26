@@ -63,7 +63,7 @@ export function PieChartDay({ dayBreakdown, dayName }: PieChartDayProps) {
         {dayName}
       </h3>
       <div className="mb-4">
-        <ResponsiveContainer width="100%" height={180}>
+        <ResponsiveContainer width="100%" height={200}>
           <PieChart>
             <Pie
               data={chartData}
@@ -71,7 +71,8 @@ export function PieChartDay({ dayBreakdown, dayName }: PieChartDayProps) {
               cy="50%"
               labelLine={false}
               label={renderLabel}
-              outerRadius={65}
+              outerRadius={60}
+              innerRadius={0}
               fill="#8884d8"
               dataKey="value"
             >
