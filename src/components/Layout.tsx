@@ -1,8 +1,8 @@
 import type { ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
+import { useTheme } from '../hooks/useTheme';
 import { logOut } from '../firebase/auth';
-import { ThemeToggle } from './ThemeToggle';
 
 interface LayoutProps {
   children: ReactNode;
@@ -11,6 +11,8 @@ interface LayoutProps {
 export function Layout({ children }: LayoutProps) {
   const { user } = useAuth();
   const navigate = useNavigate();
+  // Initialize theme (hook applies theme automatically)
+  useTheme();
 
   const handleLogout = async () => {
     try {
@@ -39,7 +41,6 @@ export function Layout({ children }: LayoutProps) {
                 )}
               </div>
               <div className="flex items-center gap-3">
-                <ThemeToggle />
                 <button
                   onClick={handleLogout}
                   className="px-4 py-2 text-sm font-medium text-white bg-red-600 hover:bg-red-700 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800"

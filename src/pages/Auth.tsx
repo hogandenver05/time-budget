@@ -1,7 +1,6 @@
 import { useState, type FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { signUp, signIn, signInWithGoogle } from '../firebase/auth';
-import { ThemeToggle } from '../components/ThemeToggle';
 
 function Auth() {
   const [isSignUp, setIsSignUp] = useState(false);
@@ -47,11 +46,6 @@ function Auth() {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center px-4 py-12">
-      {/* Theme Toggle - Top Right */}
-      <div className="absolute top-4 right-4">
-        <ThemeToggle />
-      </div>
-
       <div className="w-full max-w-md">
         {/* Logo/Title */}
         <div className="text-center mb-8">
