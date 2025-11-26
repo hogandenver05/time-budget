@@ -1,27 +1,22 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
-import { getCategories, createCategory, createPlanEntry, updatePlanEntry, deletePlanEntry } from '../firebase/firestore';
+import { getCategories, deletePlanEntry } from '../firebase/firestore';
 import { getPlanEntries } from '../firebase/firestore';
-import { aggregatePlanEntries } from '../utils/aggregation';
-import { calculateWeeklySummary } from '../utils/summary';
-import { PieChartDay } from '../components/PieChartDay';
-import { WeeklySummary as WeeklySummaryComponent } from '../components/WeeklySummary';
+import { PlanEntriesList } from '../components/PlanEntriesList';
 import { AddEntryWizard, type WizardState } from '../components/AddEntryWizard/AddEntryWizard';
+import { createPlanEntry, updatePlanEntry, createCategory } from '../firebase/firestore';
 import { LoadingSpinner } from '../components/LoadingSpinner';
-import { Skeleton } from '../components/Skeleton';
 import type { Category } from '../types/category';
 import type { PlanEntry } from '../types/plan';
-import type { DayBreakdown } from '../utils/aggregation';
-import type { WeeklySummary } from '../utils/summary';
 
-const DAY_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+const DAY_ABBREVIATIONS = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
 
-function WeeklyView() {
+function PlanEntriesPage() {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [categoriesList, setCategoriesList] = useState<(Category & { id: string })[]>([]);
   const [planEntries, setPlanEntries] = useState<(PlanEntry & { id: string })[]>([]);
-  const [dayBreakdowns, setDayBreakdowns] = useState<DayBreakdown[]>([]);
-  const [weeklySummary, setWeeklySummary] = useState<WeeklySummary | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showWizard, setShowWizard] = useState(false);
@@ -40,28 +35,13 @@ function WeeklyView() {
       setLoading(true);
       setError(null);
 
-      // Fetch categories and plan entries in parallel
       const [categories, entries] = await Promise.all([
         getCategories(user.uid),
         getPlanEntries(user.uid),
       ]);
 
-      // Convert categories array to Map for efficient lookups
-      const categoriesMap = new Map<string, Category & { id: string }>();
-      categories.forEach((cat) => {
-        categoriesMap.set(cat.id, cat);
-      });
-
       setCategoriesList(categories);
       setPlanEntries(entries);
-
-      // Aggregate plan entries into daily breakdowns
-      const breakdowns = aggregatePlanEntries(entries, categoriesMap);
-      setDayBreakdowns(breakdowns);
-
-      // Calculate weekly summary
-      const summary = calculateWeeklySummary(entries, categoriesMap);
-      setWeeklySummary(summary);
     } catch (err: any) {
       setError(err.message || 'Failed to load data');
     } finally {
@@ -69,14 +49,12 @@ function WeeklyView() {
     }
   };
 
-
   const handleWizardComplete = async (wizardState: WizardState) => {
     if (!user) return;
 
     try {
       setError(null);
 
-      // Step 1: Create category if it's a new one
       let categoryId = wizardState.categoryId;
       if (!categoryId && wizardState.categoryName) {
         categoryId = await createCategory(user.uid, {
@@ -91,7 +69,6 @@ function WeeklyView() {
       }
 
       if (editingEntry) {
-        // Update existing entry
         await updatePlanEntry(user.uid, editingEntry.id, {
           categoryId,
           label: wizardState.label || undefined,
@@ -102,7 +79,6 @@ function WeeklyView() {
           endTimeLocal: wizardState.endTimeLocal || undefined,
         });
       } else {
-        // Create new entry
         await createPlanEntry(user.uid, {
           categoryId,
           label: wizardState.label || undefined,
@@ -114,16 +90,31 @@ function WeeklyView() {
         });
       }
 
-      // Close wizard and refresh data
       setShowWizard(false);
       setEditingEntry(null);
       await loadData();
     } catch (err: any) {
       setError(err.message || `Failed to ${editingEntry ? 'update' : 'create'} plan entry`);
-      throw err; // Re-throw so wizard can handle it
+      throw err;
     }
   };
 
+  const handleEditEntry = (entry: PlanEntry & { id: string }) => {
+    setEditingEntry(entry);
+    setShowWizard(true);
+  };
+
+  const handleDeleteEntry = async (entryId: string) => {
+    if (!user) return;
+
+    try {
+      setError(null);
+      await deletePlanEntry(user.uid, entryId);
+      await loadData();
+    } catch (err: any) {
+      setError(err.message || 'Failed to delete entry');
+    }
+  };
 
   const handleAddEntry = () => {
     setEditingEntry(null);
@@ -134,20 +125,12 @@ function WeeklyView() {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] space-y-4">
         <LoadingSpinner size="lg" />
-        <p className="text-gray-600 dark:text-gray-400">Loading your weekly plan...</p>
-        <div className="w-full max-w-4xl space-y-4 mt-8">
-          <Skeleton className="h-32 w-full" />
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-            {[1, 2, 3, 4, 5, 6, 7].map((i) => (
-              <Skeleton key={i} className="h-64 w-full" />
-            ))}
-          </div>
-        </div>
+        <p className="text-gray-600 dark:text-gray-400">Loading plan entries...</p>
       </div>
     );
   }
 
-  if (error) {
+  if (error && !planEntries.length) {
     return (
       <div className="max-w-2xl mx-auto">
         <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-6">
@@ -184,46 +167,42 @@ function WeeklyView() {
   }
 
   return (
-    <div className="space-y-8">
-      {/* Page Title */}
-      <div>
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-          Weekly Time Budget
-        </h1>
-        <p className="text-gray-600 dark:text-gray-400">
-          Plan your week and see how your time is allocated
-        </p>
-      </div>
-
-      {/* Daily Breakdown - 7 days + summary = 8 cards */}
-      <div>
-        <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
-          Daily Breakdown
-        </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 lg:gap-6">
-          {dayBreakdowns.map((breakdown, index) => (
-            <PieChartDay
-              key={breakdown.dayOfWeek}
-              dayBreakdown={breakdown}
-              dayName={DAY_NAMES[index]}
-            />
-          ))}
-          {/* Summary as 8th card */}
-          {weeklySummary && (
-            <WeeklySummaryComponent summary={weeklySummary} />
-          )}
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <button
+            onClick={() => navigate('/')}
+            className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white mb-4 flex items-center gap-2 transition-colors"
+          >
+            <svg
+              className="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M15 19l-7-7 7-7"
+              />
+            </svg>
+            Back to Weekly View
+          </button>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+            Manage Plan Entries
+          </h1>
+          <p className="text-gray-600 dark:text-gray-400">
+            Edit, delete, or add new plan entries
+          </p>
         </div>
-      </div>
-
-      {/* Add to Week Button - FAB on mobile, regular button on desktop */}
-      <div className="fixed bottom-6 right-6 sm:static sm:flex sm:justify-center sm:mt-8">
         <button
           onClick={handleAddEntry}
-          className="w-14 h-14 sm:w-auto sm:h-auto sm:px-6 sm:py-3 bg-primary-600 hover:bg-primary-700 text-white rounded-full sm:rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center gap-2 font-medium focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800"
-          aria-label="Add to Week"
+          className="px-6 py-3 bg-primary-600 hover:bg-primary-700 text-white rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center gap-2 font-medium focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800"
         >
           <svg
-            className="w-6 h-6 sm:w-5 sm:h-5"
+            className="w-5 h-5"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -235,8 +214,25 @@ function WeeklyView() {
               d="M12 4v16m8-8H4"
             />
           </svg>
-          <span className="hidden sm:inline">Add to Week</span>
+          Add Entry
         </button>
+      </div>
+
+      {/* Error Banner */}
+      {error && (
+        <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4">
+          <p className="text-sm text-yellow-800 dark:text-yellow-200">{error}</p>
+        </div>
+      )}
+
+      {/* Plan Entries List */}
+      <div>
+        <PlanEntriesList
+          entries={planEntries}
+          categories={new Map(categoriesList.map((cat) => [cat.id, cat]))}
+          onEdit={handleEditEntry}
+          onDelete={handleDeleteEntry}
+        />
       </div>
 
       {/* Wizard Modal */}
@@ -256,5 +252,5 @@ function WeeklyView() {
   );
 }
 
-export default WeeklyView;
+export default PlanEntriesPage;
 
