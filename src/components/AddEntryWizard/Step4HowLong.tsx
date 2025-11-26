@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import type { WizardState } from './AddEntryWizard';
 
 interface Step4HowLongProps {
@@ -7,9 +7,22 @@ interface Step4HowLongProps {
 }
 
 export function Step4HowLong({ state, updateState }: Step4HowLongProps) {
-  const [useSpecificTimes, setUseSpecificTimes] = useState(false);
-  const [hours, setHours] = useState(0);
-  const [minutes, setMinutes] = useState(0);
+  const [useSpecificTimes, setUseSpecificTimes] = useState(!!(state.startTimeLocal && state.endTimeLocal));
+  
+  // Initialize hours and minutes from minutesPerDay
+  const getInitialHours = () => Math.floor(state.minutesPerDay / 60);
+  const getInitialMinutes = () => state.minutesPerDay % 60;
+  
+  const [hours, setHours] = useState(getInitialHours());
+  const [minutes, setMinutes] = useState(getInitialMinutes());
+  
+  // Update local state when state.minutesPerDay changes (e.g., when editing)
+  useEffect(() => {
+    if (state.minutesPerDay > 0 && !useSpecificTimes) {
+      setHours(getInitialHours());
+      setMinutes(getInitialMinutes());
+    }
+  }, [state.minutesPerDay, useSpecificTimes]);
 
   // Calculate minutes from hours and minutes input
   const calculateMinutes = (h: number, m: number) => {

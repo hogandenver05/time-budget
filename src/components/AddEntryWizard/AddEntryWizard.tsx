@@ -4,7 +4,7 @@ import { Step2Importance } from './Step2Importance';
 import { Step3When } from './Step3When';
 import { Step4HowLong } from './Step4HowLong';
 import type { Category } from '../../types/category';
-import type { Priority } from '../../types/plan';
+import type { Priority, PlanEntry } from '../../types/plan';
 
 export interface WizardState {
   step: number;
@@ -23,21 +23,45 @@ interface AddEntryWizardProps {
   categories: (Category & { id: string })[];
   onClose: () => void;
   onComplete: (state: WizardState) => Promise<void>;
+  initialEntry?: (PlanEntry & { id: string }) | null;
+  entryId?: string | null;
 }
 
-export function AddEntryWizard({ categories, onClose, onComplete }: AddEntryWizardProps) {
-  const [state, setState] = useState<WizardState>({
-    step: 1,
-    categoryId: null,
-    categoryName: null,
-    categoryColor: '#6366f1',
-    label: '',
-    priority: null,
-    daysOfWeek: [],
-    minutesPerDay: 0,
-    startTimeLocal: null,
-    endTimeLocal: null,
-  });
+export function AddEntryWizard({ categories, onClose, onComplete, initialEntry, entryId }: AddEntryWizardProps) {
+  const isEditing = !!initialEntry && !!entryId;
+  
+  // Initialize state from entry if editing, otherwise use defaults
+  const getInitialState = (): WizardState => {
+    if (initialEntry) {
+      return {
+        step: 1,
+        categoryId: initialEntry.categoryId,
+        categoryName: null,
+        categoryColor: categories.find((c) => c.id === initialEntry.categoryId)?.color || '#6366f1',
+        label: initialEntry.label || '',
+        priority: initialEntry.priority,
+        daysOfWeek: initialEntry.daysOfWeek,
+        minutesPerDay: initialEntry.minutesPerDay,
+        startTimeLocal: initialEntry.startTimeLocal || null,
+        endTimeLocal: initialEntry.endTimeLocal || null,
+      };
+    }
+    
+    return {
+      step: 1,
+      categoryId: null,
+      categoryName: null,
+      categoryColor: '#6366f1',
+      label: '',
+      priority: null,
+      daysOfWeek: [],
+      minutesPerDay: 0,
+      startTimeLocal: null,
+      endTimeLocal: null,
+    };
+  };
+
+  const [state, setState] = useState<WizardState>(getInitialState());
 
   const updateState = (updates: Partial<WizardState>) => {
     setState((prev) => ({ ...prev, ...updates }));
@@ -211,7 +235,7 @@ export function AddEntryWizard({ categories, onClose, onComplete }: AddEntryWiza
                   cursor: canProceed() ? 'pointer' : 'not-allowed',
                 }}
               >
-                Add to Week
+                {isEditing ? 'Update Entry' : 'Add to Week'}
               </button>
             )}
           </div>
