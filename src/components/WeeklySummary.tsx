@@ -19,93 +19,51 @@ export function WeeklySummary({ summary }: WeeklySummaryProps) {
   };
 
   return (
-    <div
-      style={{
-        padding: '1.5rem',
-        backgroundColor: '#f8f9fa',
-        borderRadius: '8px',
-        border: '1px solid #e9ecef',
-      }}
-    >
-      <h2 style={{ margin: '0 0 1rem 0', fontSize: '1.5rem' }}>Week Summary</h2>
+    <div className="p-6 bg-gray-50 dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-700">
+      <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Week Summary</h2>
       
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-          gap: '1rem',
-        }}
-      >
-        {/* Need vs Want */}
-        <div
-          style={{
-            padding: '1rem',
-            backgroundColor: 'white',
-            borderRadius: '6px',
-            border: '1px solid #dee2e6',
-          }}
-        >
-          <div style={{ fontSize: '0.875rem', color: '#666', marginBottom: '0.5rem' }}>Need</div>
-          <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#dc3545' }}>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        {/* Need */}
+        <div className="p-5 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow">
+          <div className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">Need</div>
+          <div className="text-2xl font-bold text-red-600 dark:text-red-400">
             {formatHours(summary.totalNeedHours)}
           </div>
         </div>
 
-        <div
-          style={{
-            padding: '1rem',
-            backgroundColor: 'white',
-            borderRadius: '6px',
-            border: '1px solid #dee2e6',
-          }}
-        >
-          <div style={{ fontSize: '0.875rem', color: '#666', marginBottom: '0.5rem' }}>Want</div>
-          <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#007bff' }}>
+        {/* Want */}
+        <div className="p-5 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow">
+          <div className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">Want</div>
+          <div className="text-2xl font-bold text-primary-600 dark:text-primary-400">
             {formatHours(summary.totalWantHours)}
           </div>
         </div>
 
         {/* Free Time */}
-        <div
-          style={{
-            padding: '1rem',
-            backgroundColor: 'white',
-            borderRadius: '6px',
-            border: '1px solid #dee2e6',
-          }}
-        >
-          <div style={{ fontSize: '0.875rem', color: '#666', marginBottom: '0.5rem' }}>Free Time</div>
-          <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#6c757d' }}>
+        <div className="p-5 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow">
+          <div className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">Free Time</div>
+          <div className="text-2xl font-bold text-gray-700 dark:text-gray-300">
             {formatHours(summary.totalFreeTimeHours)}
           </div>
-          <div style={{ fontSize: '0.75rem', color: '#999', marginTop: '0.25rem' }}>
+          <div className="text-xs text-gray-500 dark:text-gray-500 mt-1">
             {formatPercentage(summary.freeTimePercentage)} of week
           </div>
         </div>
 
         {/* Biggest Category */}
         {summary.biggestCategory && (
-          <div
-            style={{
-              padding: '1rem',
-              backgroundColor: 'white',
-              borderRadius: '6px',
-              border: '1px solid #dee2e6',
-            }}
-          >
-            <div style={{ fontSize: '0.875rem', color: '#666', marginBottom: '0.5rem' }}>Biggest Category</div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem' }}>
+          <div className="p-5 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow">
+            <div className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">Biggest Category</div>
+            <div className="flex items-center gap-2 mb-2">
               <div
-                style={{
-                  width: '12px',
-                  height: '12px',
-                  borderRadius: '50%',
-                  backgroundColor: summary.biggestCategory.color,
-                }}
+                className="w-3 h-3 rounded-full"
+                style={{ backgroundColor: summary.biggestCategory.color }}
               />
-              <div style={{ fontSize: '1rem', fontWeight: 'bold' }}>{summary.biggestCategory.name}</div>
+              <div className="text-base font-semibold text-gray-900 dark:text-white">
+                {summary.biggestCategory.name}
+              </div>
             </div>
-            <div style={{ fontSize: '1.25rem', fontWeight: 'bold', color: '#495057' }}>
+            <div className="text-xl font-bold text-gray-700 dark:text-gray-300">
               {formatHours(summary.biggestCategory.hours)}
             </div>
           </div>
