@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { logOut } from '../firebase/auth';
+import { CategoriesList } from '../components/CategoriesList';
 
 function WeeklyView() {
   const { user } = useAuth();
@@ -41,6 +42,9 @@ function WeeklyView() {
         </button>
       </div>
       <p>This is the main app view where the weekly pie charts will be displayed.</p>
+      
+      {/* Temporary: Categories list for testing Day 3 functionality */}
+      <CategoriesList />
     </div>
   );
 }
