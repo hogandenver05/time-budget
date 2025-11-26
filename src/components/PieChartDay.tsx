@@ -29,16 +29,9 @@ export function PieChartDay({ dayBreakdown, dayName }: PieChartDayProps) {
     if (active && payload && payload.length) {
       const data = payload[0];
       return (
-        <div
-          style={{
-            backgroundColor: 'white',
-            padding: '0.5rem',
-            border: '1px solid #ccc',
-            borderRadius: '4px',
-          }}
-        >
-          <p style={{ margin: 0, fontWeight: 'bold' }}>{data.name}</p>
-          <p style={{ margin: 0 }}>{formatMinutes(data.value)}</p>
+        <div className="bg-white dark:bg-gray-800 p-3 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg">
+          <p className="m-0 font-semibold text-gray-900 dark:text-white">{data.name}</p>
+          <p className="m-0 text-sm text-gray-600 dark:text-gray-400">{formatMinutes(data.value)}</p>
         </div>
       );
     }
@@ -54,60 +47,65 @@ export function PieChartDay({ dayBreakdown, dayName }: PieChartDayProps) {
 
   if (chartData.length === 0) {
     return (
-      <div
-        style={{
-          padding: '1rem',
-          border: '1px solid #ddd',
-          borderRadius: '8px',
-          textAlign: 'center',
-        }}
-      >
-        <h3 style={{ marginTop: 0 }}>{dayName}</h3>
-        <p>No activities planned</p>
-        <div style={{ height: '200px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <p style={{ color: '#999' }}>24 hours free</p>
+      <div className="p-6 border border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 shadow-sm hover:shadow-md transition-shadow text-center">
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">{dayName}</h3>
+        <p className="text-gray-600 dark:text-gray-400 mb-4">No activities planned</p>
+        <div className="h-48 flex items-center justify-center">
+          <p className="text-gray-400 dark:text-gray-500 text-sm">24 hours free</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div
-      style={{
-        padding: '1rem',
-        border: '1px solid #ddd',
-        borderRadius: '8px',
-        backgroundColor: 'white',
-      }}
-    >
-      <h3 style={{ marginTop: 0, marginBottom: '1rem', textAlign: 'center' }}>{dayName}</h3>
-      <ResponsiveContainer width="100%" height={250}>
-        <PieChart>
-          <Pie
-            data={chartData}
-            cx="50%"
-            cy="50%"
-            labelLine={false}
-            label={renderLabel}
-            outerRadius={80}
-            fill="#8884d8"
-            dataKey="value"
+    <div className="p-4 sm:p-6 border border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 shadow-sm hover:shadow-md transition-all duration-200">
+      <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 text-center">
+        {dayName}
+      </h3>
+      <div className="mb-4">
+        <ResponsiveContainer width="100%" height={200}>
+          <PieChart>
+            <Pie
+              data={chartData}
+              cx="50%"
+              cy="50%"
+              labelLine={false}
+              label={renderLabel}
+              outerRadius={60}
+              innerRadius={0}
+              fill="#8884d8"
+              dataKey="value"
+            >
+              {chartData.map((entry, index) => (
+                <Cell key={`cell-${index}`} fill={entry.color} />
+              ))}
+            </Pie>
+            <Tooltip content={<CustomTooltip />} />
+          </PieChart>
+        </ResponsiveContainer>
+      </div>
+      {/* Legend */}
+      <div className="space-y-1">
+        {chartData.map((entry, index) => (
+          <div
+            key={index}
+            className="flex items-center justify-between text-xs"
           >
-            {chartData.map((entry, index) => (
-              <Cell key={`cell-${index}`} fill={entry.color} />
-            ))}
-          </Pie>
-          <Tooltip content={<CustomTooltip />} />
-          <Legend
-            verticalAlign="bottom"
-            height={36}
-            formatter={(value) => {
-              const data = chartData.find((d) => d.name === value);
-              return data ? `${value} (${formatMinutes(data.value)})` : value;
-            }}
-          />
-        </PieChart>
-      </ResponsiveContainer>
+            <div className="flex items-center gap-2 flex-1 min-w-0">
+              <div
+                className="w-3 h-3 rounded-full flex-shrink-0"
+                style={{ backgroundColor: entry.color }}
+              />
+              <span className="text-gray-700 dark:text-gray-300 truncate">
+                {entry.name}
+              </span>
+            </div>
+            <span className="text-gray-600 dark:text-gray-400 ml-2 flex-shrink-0">
+              {formatMinutes(entry.value)}
+            </span>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

@@ -54,25 +54,15 @@ export function Step4HowLong({ state, updateState }: Step4HowLongProps) {
   };
 
   return (
-    <div>
-      <h2 style={{ marginTop: 0 }}>How long?</h2>
-      <p style={{ color: '#666', marginBottom: '1.5rem' }}>
+    <div className="pb-6">
+      <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-2">How long?</h2>
+      <p className="text-gray-600 dark:text-gray-400 mb-6">
         Set the time per day for this activity. You can use a duration or specific start and end times.
       </p>
 
       {/* Toggle between duration and specific times */}
-      <div style={{ marginBottom: '1.5rem' }}>
-        <label
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.5rem',
-            cursor: 'pointer',
-            padding: '0.75rem',
-            border: '1px solid #ddd',
-            borderRadius: '4px',
-          }}
-        >
+      <div className="mb-6">
+        <label className="flex items-center gap-3 cursor-pointer p-4 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
           <input
             type="checkbox"
             checked={useSpecificTimes}
@@ -83,17 +73,18 @@ export function Step4HowLong({ state, updateState }: Step4HowLongProps) {
                 updateState({ startTimeLocal: null, endTimeLocal: null });
               }
             }}
+            className="w-5 h-5 text-primary-600 border-gray-300 rounded focus:ring-primary-500 focus:ring-2"
           />
-          <span>Set specific times</span>
+          <span className="text-gray-700 dark:text-gray-300 font-medium">Set specific times</span>
         </label>
       </div>
 
       {!useSpecificTimes ? (
         /* Duration input */
         <div>
-          <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-            <div style={{ flex: 1 }}>
-              <label htmlFor="hours" style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.875rem' }}>
+          <div className="flex gap-4">
+            <div className="flex-1">
+              <label htmlFor="hours" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Hours
               </label>
               <input
@@ -106,17 +97,11 @@ export function Step4HowLong({ state, updateState }: Step4HowLongProps) {
                   const h = Math.max(0, Math.min(24, parseInt(e.target.value) || 0));
                   handleDurationChange(h, minutes);
                 }}
-                style={{
-                  width: '100%',
-                  padding: '0.75rem',
-                  border: '1px solid #ddd',
-                  borderRadius: '4px',
-                  fontSize: '1rem',
-                }}
+                className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors"
               />
             </div>
-            <div style={{ flex: 1 }}>
-              <label htmlFor="minutes" style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.875rem' }}>
+            <div className="flex-1">
+              <label htmlFor="minutes" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Minutes
               </label>
               <input
@@ -129,28 +114,25 @@ export function Step4HowLong({ state, updateState }: Step4HowLongProps) {
                   const m = Math.max(0, Math.min(59, parseInt(e.target.value) || 0));
                   handleDurationChange(hours, m);
                 }}
-                style={{
-                  width: '100%',
-                  padding: '0.75rem',
-                  border: '1px solid #ddd',
-                  borderRadius: '4px',
-                  fontSize: '1rem',
-                }}
+                className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors"
               />
             </div>
           </div>
           {state.minutesPerDay > 0 && (
-            <div style={{ marginTop: '1rem', padding: '0.75rem', backgroundColor: '#f0f8ff', borderRadius: '4px' }}>
-              <strong>Total:</strong> {Math.floor(state.minutesPerDay / 60)}h {state.minutesPerDay % 60}m per day
+            <div className="mt-4 p-4 bg-primary-50 dark:bg-primary-900/20 border border-primary-200 dark:border-primary-800 rounded-lg">
+              <p className="text-sm text-gray-700 dark:text-gray-300 m-0">
+                <strong className="font-semibold">Total:</strong> {Math.floor(state.minutesPerDay / 60)}h{' '}
+                {state.minutesPerDay % 60}m per day
+              </p>
             </div>
           )}
         </div>
       ) : (
         /* Start and end time pickers */
         <div>
-          <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-            <div style={{ flex: 1 }}>
-              <label htmlFor="startTime" style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.875rem' }}>
+          <div className="flex gap-4">
+            <div className="flex-1">
+              <label htmlFor="startTime" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Start Time
               </label>
               <input
@@ -165,17 +147,11 @@ export function Step4HowLong({ state, updateState }: Step4HowLongProps) {
                     updateState({ startTimeLocal: start });
                   }
                 }}
-                style={{
-                  width: '100%',
-                  padding: '0.75rem',
-                  border: '1px solid #ddd',
-                  borderRadius: '4px',
-                  fontSize: '1rem',
-                }}
+                className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors"
               />
             </div>
-            <div style={{ flex: 1 }}>
-              <label htmlFor="endTime" style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.875rem' }}>
+            <div className="flex-1">
+              <label htmlFor="endTime" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 End Time
               </label>
               <input
@@ -190,19 +166,16 @@ export function Step4HowLong({ state, updateState }: Step4HowLongProps) {
                     updateState({ endTimeLocal: end });
                   }
                 }}
-                style={{
-                  width: '100%',
-                  padding: '0.75rem',
-                  border: '1px solid #ddd',
-                  borderRadius: '4px',
-                  fontSize: '1rem',
-                }}
+                className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors"
               />
             </div>
           </div>
           {state.minutesPerDay > 0 && (
-            <div style={{ marginTop: '1rem', padding: '0.75rem', backgroundColor: '#f0f8ff', borderRadius: '4px' }}>
-              <strong>Duration:</strong> {Math.floor(state.minutesPerDay / 60)}h {state.minutesPerDay % 60}m per day
+            <div className="mt-4 p-4 bg-primary-50 dark:bg-primary-900/20 border border-primary-200 dark:border-primary-800 rounded-lg">
+              <p className="text-sm text-gray-700 dark:text-gray-300 m-0">
+                <strong className="font-semibold">Duration:</strong> {Math.floor(state.minutesPerDay / 60)}h{' '}
+                {state.minutesPerDay % 60}m per day
+              </p>
             </div>
           )}
         </div>

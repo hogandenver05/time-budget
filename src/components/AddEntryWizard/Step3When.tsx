@@ -29,41 +29,25 @@ export function Step3When({ state, updateState }: Step3WhenProps) {
   };
 
   return (
-    <div>
-      <h2 style={{ marginTop: 0 }}>When?</h2>
-      <p style={{ color: '#666', marginBottom: '1.5rem' }}>
+    <div className="pb-6">
+      <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-2">When?</h2>
+      <p className="text-gray-600 dark:text-gray-400 mb-6">
         Select which days of the week this activity applies to.
       </p>
 
       {/* Day chips */}
-      <div
-        style={{
-          display: 'flex',
-          gap: '0.5rem',
-          marginBottom: '1.5rem',
-          flexWrap: 'wrap',
-        }}
-      >
+      <div className="flex gap-2 mb-6 flex-wrap">
         {DAY_ABBREVIATIONS.map((abbr, index) => {
           const isSelected = state.daysOfWeek.includes(index);
           return (
             <button
               key={index}
               onClick={() => toggleDay(index)}
-              style={{
-                width: '48px',
-                height: '48px',
-                borderRadius: '50%',
-                border: isSelected ? '2px solid #007bff' : '1px solid #ddd',
-                backgroundColor: isSelected ? '#007bff' : 'white',
-                color: isSelected ? 'white' : '#333',
-                fontSize: '1rem',
-                fontWeight: 'bold',
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
+              className={`w-12 h-12 sm:w-14 sm:h-14 rounded-full font-bold text-base sm:text-lg transition-all duration-200 flex items-center justify-center ${
+                isSelected
+                  ? 'bg-primary-600 text-white border-2 border-primary-600 shadow-md scale-110'
+                  : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-2 border-gray-300 dark:border-gray-600 hover:border-primary-400 dark:hover:border-primary-500 hover:shadow-sm'
+              }`}
               title={DAY_NAMES[index]}
             >
               {abbr}
@@ -73,49 +57,25 @@ export function Step3When({ state, updateState }: Step3WhenProps) {
       </div>
 
       {/* Shortcuts */}
-      <div style={{ marginBottom: '1.5rem' }}>
-        <p style={{ marginBottom: '0.5rem', fontSize: '0.875rem', color: '#666' }}>Shortcuts:</p>
-        <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+      <div className="mb-6">
+        <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">Shortcuts:</p>
+        <div className="flex gap-2 flex-wrap">
           <button
             onClick={selectEveryDay}
-            style={{
-              padding: '0.5rem 1rem',
-              backgroundColor: 'transparent',
-              color: '#007bff',
-              border: '1px solid #007bff',
-              borderRadius: '4px',
-              cursor: 'pointer',
-              fontSize: '0.875rem',
-            }}
+            className="px-4 py-2 text-sm font-medium text-primary-600 dark:text-primary-400 border border-primary-300 dark:border-primary-600 rounded-lg hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-colors"
           >
             Every day
           </button>
           <button
             onClick={selectWeekdays}
-            style={{
-              padding: '0.5rem 1rem',
-              backgroundColor: 'transparent',
-              color: '#007bff',
-              border: '1px solid #007bff',
-              borderRadius: '4px',
-              cursor: 'pointer',
-              fontSize: '0.875rem',
-            }}
+            className="px-4 py-2 text-sm font-medium text-primary-600 dark:text-primary-400 border border-primary-300 dark:border-primary-600 rounded-lg hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-colors"
           >
             Weekdays
           </button>
           {state.daysOfWeek.length > 0 && (
             <button
               onClick={clearDays}
-              style={{
-                padding: '0.5rem 1rem',
-                backgroundColor: 'transparent',
-                color: '#666',
-                border: '1px solid #ddd',
-                borderRadius: '4px',
-                cursor: 'pointer',
-                fontSize: '0.875rem',
-              }}
+              className="px-4 py-2 text-sm font-medium text-gray-600 dark:text-gray-400 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
             >
               Clear
             </button>
@@ -125,18 +85,11 @@ export function Step3When({ state, updateState }: Step3WhenProps) {
 
       {/* Selected days summary */}
       {state.daysOfWeek.length > 0 && (
-        <div
-          style={{
-            padding: '1rem',
-            backgroundColor: '#f0f8ff',
-            borderRadius: '4px',
-            fontSize: '0.875rem',
-          }}
-        >
-          <strong>Selected:</strong>{' '}
-          {state.daysOfWeek
-            .map((day) => DAY_NAMES[day])
-            .join(', ')}
+        <div className="p-4 bg-primary-50 dark:bg-primary-900/20 border border-primary-200 dark:border-primary-800 rounded-lg">
+          <p className="text-sm text-gray-700 dark:text-gray-300 m-0">
+            <strong className="font-semibold">Selected:</strong>{' '}
+            {state.daysOfWeek.map((day) => DAY_NAMES[day]).join(', ')}
+          </p>
         </div>
       )}
     </div>
