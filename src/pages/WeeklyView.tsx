@@ -5,12 +5,15 @@ import { logOut } from '../firebase/auth';
 import { getCategories, createCategory, createPlanEntry, updatePlanEntry, deletePlanEntry } from '../firebase/firestore';
 import { getPlanEntries } from '../firebase/firestore';
 import { aggregatePlanEntries } from '../utils/aggregation';
+import { calculateWeeklySummary } from '../utils/summary';
 import { PieChartDay } from '../components/PieChartDay';
 import { PlanEntriesList } from '../components/PlanEntriesList';
+import { WeeklySummary as WeeklySummaryComponent } from '../components/WeeklySummary';
 import { AddEntryWizard, type WizardState } from '../components/AddEntryWizard/AddEntryWizard';
 import type { Category } from '../types/category';
 import type { PlanEntry } from '../types/plan';
 import type { DayBreakdown } from '../utils/aggregation';
+import type { WeeklySummary } from '../utils/summary';
 
 const DAY_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
@@ -20,6 +23,7 @@ function WeeklyView() {
   const [categoriesList, setCategoriesList] = useState<(Category & { id: string })[]>([]);
   const [planEntries, setPlanEntries] = useState<(PlanEntry & { id: string })[]>([]);
   const [dayBreakdowns, setDayBreakdowns] = useState<DayBreakdown[]>([]);
+  const [weeklySummary, setWeeklySummary] = useState<WeeklySummary | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showWizard, setShowWizard] = useState(false);
@@ -56,6 +60,10 @@ function WeeklyView() {
       // Aggregate plan entries into daily breakdowns
       const breakdowns = aggregatePlanEntries(entries, categoriesMap);
       setDayBreakdowns(breakdowns);
+
+      // Calculate weekly summary
+      const summary = calculateWeeklySummary(entries, categoriesMap);
+      setWeeklySummary(summary);
     } catch (err: any) {
       setError(err.message || 'Failed to load data');
     } finally {
@@ -192,20 +200,12 @@ function WeeklyView() {
         </button>
       </div>
 
-      {/* Summary Placeholder */}
-      <div
-        style={{
-          padding: '1rem',
-          backgroundColor: '#f5f5f5',
-          borderRadius: '8px',
-          marginBottom: '2rem',
-        }}
-      >
-        <h2 style={{ margin: '0 0 0.5rem 0', fontSize: '1.25rem' }}>Week Summary</h2>
-        <p style={{ margin: 0, color: '#666' }}>
-          Summary statistics will appear here (total hours by Need vs Want, biggest category, total free time)
-        </p>
-      </div>
+      {/* Weekly Summary */}
+      {weeklySummary && (
+        <div style={{ marginBottom: '2rem' }}>
+          <WeeklySummaryComponent summary={weeklySummary} />
+        </div>
+      )}
 
       {/* Seven Daily Pie Charts */}
       <div
