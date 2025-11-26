@@ -29,16 +29,9 @@ export function PieChartDay({ dayBreakdown, dayName }: PieChartDayProps) {
     if (active && payload && payload.length) {
       const data = payload[0];
       return (
-        <div
-          style={{
-            backgroundColor: 'white',
-            padding: '0.5rem',
-            border: '1px solid #ccc',
-            borderRadius: '4px',
-          }}
-        >
-          <p style={{ margin: 0, fontWeight: 'bold' }}>{data.name}</p>
-          <p style={{ margin: 0 }}>{formatMinutes(data.value)}</p>
+        <div className="bg-white dark:bg-gray-800 p-3 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg">
+          <p className="m-0 font-semibold text-gray-900 dark:text-white">{data.name}</p>
+          <p className="m-0 text-sm text-gray-600 dark:text-gray-400">{formatMinutes(data.value)}</p>
         </div>
       );
     }
@@ -54,33 +47,21 @@ export function PieChartDay({ dayBreakdown, dayName }: PieChartDayProps) {
 
   if (chartData.length === 0) {
     return (
-      <div
-        style={{
-          padding: '1rem',
-          border: '1px solid #ddd',
-          borderRadius: '8px',
-          textAlign: 'center',
-        }}
-      >
-        <h3 style={{ marginTop: 0 }}>{dayName}</h3>
-        <p>No activities planned</p>
-        <div style={{ height: '200px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <p style={{ color: '#999' }}>24 hours free</p>
+      <div className="p-6 border border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 shadow-sm hover:shadow-md transition-shadow text-center">
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">{dayName}</h3>
+        <p className="text-gray-600 dark:text-gray-400 mb-4">No activities planned</p>
+        <div className="h-48 flex items-center justify-center">
+          <p className="text-gray-400 dark:text-gray-500 text-sm">24 hours free</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div
-      style={{
-        padding: '1rem',
-        border: '1px solid #ddd',
-        borderRadius: '8px',
-        backgroundColor: 'white',
-      }}
-    >
-      <h3 style={{ marginTop: 0, marginBottom: '1rem', textAlign: 'center' }}>{dayName}</h3>
+    <div className="p-4 sm:p-6 border border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 shadow-sm hover:shadow-md transition-all duration-200">
+      <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 text-center">
+        {dayName}
+      </h3>
       <ResponsiveContainer width="100%" height={250}>
         <PieChart>
           <Pie
@@ -101,6 +82,7 @@ export function PieChartDay({ dayBreakdown, dayName }: PieChartDayProps) {
           <Legend
             verticalAlign="bottom"
             height={36}
+            wrapperStyle={{ fontSize: '12px' }}
             formatter={(value) => {
               const data = chartData.find((d) => d.name === value);
               return data ? `${value} (${formatMinutes(data.value)})` : value;
