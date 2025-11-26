@@ -16,7 +16,6 @@ const DAY_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Frid
 function WeeklyView() {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const [, setCategories] = useState<Map<string, Category & { id: string }>>(new Map());
   const [categoriesList, setCategoriesList] = useState<(Category & { id: string })[]>([]);
   const [, setPlanEntries] = useState<(PlanEntry & { id: string })[]>([]);
   const [dayBreakdowns, setDayBreakdowns] = useState<DayBreakdown[]>([]);
@@ -49,7 +48,6 @@ function WeeklyView() {
         categoriesMap.set(cat.id, cat);
       });
 
-      setCategories(categoriesMap);
       setCategoriesList(categories);
       setPlanEntries(entries);
 
