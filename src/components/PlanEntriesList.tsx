@@ -1,7 +1,6 @@
 import type { PlanEntry } from '../types/plan';
 import type { Category } from '../types/category';
 
-const DAY_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 const DAY_ABBREVIATIONS = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
 
 interface PlanEntriesListProps {

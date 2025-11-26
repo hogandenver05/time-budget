@@ -2,10 +2,11 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { logOut } from '../firebase/auth';
-import { getCategories, createCategory, createPlanEntry } from '../firebase/firestore';
+import { getCategories, createCategory, createPlanEntry, updatePlanEntry, deletePlanEntry } from '../firebase/firestore';
 import { getPlanEntries } from '../firebase/firestore';
 import { aggregatePlanEntries } from '../utils/aggregation';
 import { PieChartDay } from '../components/PieChartDay';
+import { PlanEntriesList } from '../components/PlanEntriesList';
 import { AddEntryWizard, type WizardState } from '../components/AddEntryWizard/AddEntryWizard';
 import type { Category } from '../types/category';
 import type { PlanEntry } from '../types/plan';
@@ -17,11 +18,12 @@ function WeeklyView() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [categoriesList, setCategoriesList] = useState<(Category & { id: string })[]>([]);
-  const [, setPlanEntries] = useState<(PlanEntry & { id: string })[]>([]);
+  const [planEntries, setPlanEntries] = useState<(PlanEntry & { id: string })[]>([]);
   const [dayBreakdowns, setDayBreakdowns] = useState<DayBreakdown[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showWizard, setShowWizard] = useState(false);
+  const [editingEntry, setEditingEntry] = useState<(PlanEntry & { id: string }) | null>(null);
 
   useEffect(() => {
     if (user) {
@@ -90,24 +92,60 @@ function WeeklyView() {
         throw new Error('Category is required');
       }
 
-      // Step 2: Create plan entry
-      await createPlanEntry(user.uid, {
-        categoryId,
-        label: wizardState.label || undefined,
-        priority: wizardState.priority!,
-        daysOfWeek: wizardState.daysOfWeek,
-        minutesPerDay: wizardState.minutesPerDay,
-        startTimeLocal: wizardState.startTimeLocal || undefined,
-        endTimeLocal: wizardState.endTimeLocal || undefined,
-      });
+      if (editingEntry) {
+        // Update existing entry
+        await updatePlanEntry(user.uid, editingEntry.id, {
+          categoryId,
+          label: wizardState.label || undefined,
+          priority: wizardState.priority!,
+          daysOfWeek: wizardState.daysOfWeek,
+          minutesPerDay: wizardState.minutesPerDay,
+          startTimeLocal: wizardState.startTimeLocal || undefined,
+          endTimeLocal: wizardState.endTimeLocal || undefined,
+        });
+      } else {
+        // Create new entry
+        await createPlanEntry(user.uid, {
+          categoryId,
+          label: wizardState.label || undefined,
+          priority: wizardState.priority!,
+          daysOfWeek: wizardState.daysOfWeek,
+          minutesPerDay: wizardState.minutesPerDay,
+          startTimeLocal: wizardState.startTimeLocal || undefined,
+          endTimeLocal: wizardState.endTimeLocal || undefined,
+        });
+      }
 
       // Close wizard and refresh data
       setShowWizard(false);
+      setEditingEntry(null);
       await loadData();
     } catch (err: any) {
-      setError(err.message || 'Failed to create plan entry');
+      setError(err.message || `Failed to ${editingEntry ? 'update' : 'create'} plan entry`);
       throw err; // Re-throw so wizard can handle it
     }
+  };
+
+  const handleEditEntry = (entry: PlanEntry & { id: string }) => {
+    setEditingEntry(entry);
+    setShowWizard(true);
+  };
+
+  const handleDeleteEntry = async (entryId: string) => {
+    if (!user) return;
+
+    try {
+      setError(null);
+      await deletePlanEntry(user.uid, entryId);
+      await loadData();
+    } catch (err: any) {
+      setError(err.message || 'Failed to delete entry');
+    }
+  };
+
+  const handleAddEntry = () => {
+    setEditingEntry(null);
+    setShowWizard(true);
   };
 
   if (loading) {
@@ -187,10 +225,20 @@ function WeeklyView() {
         ))}
       </div>
 
+      {/* Plan Entries List */}
+      <div style={{ marginTop: '2rem' }}>
+        <PlanEntriesList
+          entries={planEntries}
+          categories={new Map(categoriesList.map((cat) => [cat.id, cat]))}
+          onEdit={handleEditEntry}
+          onDelete={handleDeleteEntry}
+        />
+      </div>
+
       {/* Add to Week Button */}
       <div style={{ textAlign: 'center', marginTop: '2rem' }}>
         <button
-          onClick={() => setShowWizard(true)}
+          onClick={handleAddEntry}
           style={{
             padding: '0.75rem 2rem',
             fontSize: '1rem',
@@ -209,8 +257,13 @@ function WeeklyView() {
       {showWizard && (
         <AddEntryWizard
           categories={categoriesList}
-          onClose={() => setShowWizard(false)}
+          onClose={() => {
+            setShowWizard(false);
+            setEditingEntry(null);
+          }}
           onComplete={handleWizardComplete}
+          initialEntry={editingEntry}
+          entryId={editingEntry?.id || null}
         />
       )}
     </div>

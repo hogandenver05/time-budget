@@ -33,10 +33,6 @@ export function AddEntryWizard({ categories, onClose, onComplete, initialEntry, 
   // Initialize state from entry if editing, otherwise use defaults
   const getInitialState = (): WizardState => {
     if (initialEntry) {
-      // Calculate hours and minutes from minutesPerDay for Step 4
-      const hours = Math.floor(initialEntry.minutesPerDay / 60);
-      const minutes = initialEntry.minutesPerDay % 60;
-      
       return {
         step: 1,
         categoryId: initialEntry.categoryId,
