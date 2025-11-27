@@ -9,6 +9,7 @@ import {
 import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
 import { auth, db } from './config';
 import type { User } from '../types/user';
+import { seedDefaultCategories } from './seedCategories';
 
 const googleProvider = new GoogleAuthProvider();
 
@@ -115,6 +116,8 @@ async function createUserDocument(
     };
     
     await setDoc(userRef, userData);
+    
+    await seedDefaultCategories(firebaseUser.uid);
   }
 }
 
