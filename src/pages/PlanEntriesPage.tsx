@@ -94,7 +94,7 @@ function PlanEntriesPage() {
       setEditingEntry(null);
       await loadData();
     } catch (err: any) {
-      setError(err.message || `Failed to ${editingEntry ? 'update' : 'create'} plan entry`);
+      setError(err.message || `Failed to ${editingEntry ? 'update' : 'create'} activity`);
       throw err;
     }
   };
@@ -112,7 +112,7 @@ function PlanEntriesPage() {
       await deletePlanEntry(user.uid, entryId);
       await loadData();
     } catch (err: any) {
-      setError(err.message || 'Failed to delete entry');
+      setError(err.message || 'Failed to delete activity');
     }
   };
 
@@ -125,7 +125,7 @@ function PlanEntriesPage() {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] space-y-4">
         <LoadingSpinner size="lg" />
-        <p className="text-gray-600 dark:text-gray-400">Loading plan entries...</p>
+        <p className="text-gray-600 dark:text-gray-400">Loading activities...</p>
       </div>
     );
   }
@@ -225,7 +225,7 @@ function PlanEntriesPage() {
         </div>
       )}
 
-      {/* Plan Entries List */}
+      {/* Activities List */}
       <div>
         <PlanEntriesList
           entries={planEntries}

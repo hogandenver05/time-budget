@@ -1,10 +1,10 @@
 import { createBrowserRouter } from 'react-router-dom';
 import WeeklyView from './pages/WeeklyView';
 import PlanEntriesPage from './pages/PlanEntriesPage';
+import ProfilePage from './pages/ProfilePage';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { AuthRedirect } from './components/AuthRedirect';
 import { Layout } from './components/Layout';
-import Auth from './pages/Auth';
 
 export const router = createBrowserRouter([
   {
@@ -23,6 +23,16 @@ export const router = createBrowserRouter([
       <ProtectedRoute>
         <Layout>
           <PlanEntriesPage />
+        </Layout>
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: '/profile',
+    element: (
+      <ProtectedRoute>
+        <Layout>
+          <ProfilePage />
         </Layout>
       </ProtectedRoute>
     ),

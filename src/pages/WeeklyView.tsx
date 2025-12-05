@@ -117,7 +117,7 @@ function WeeklyView() {
       setEditingEntry(null);
       await loadData();
     } catch (err: any) {
-      setError(err.message || `Failed to ${editingEntry ? 'update' : 'create'} plan entry`);
+      setError(err.message || `Failed to ${editingEntry ? 'update' : 'create'} activity`);
       throw err; // Re-throw so wizard can handle it
     }
   };
