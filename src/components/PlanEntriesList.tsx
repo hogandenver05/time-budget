@@ -48,7 +48,7 @@ export function PlanEntriesList({ entries, categories, onEdit, onDelete }: PlanE
           />
         </svg>
         <p className="text-gray-600 dark:text-gray-400">
-          No plan entries yet. Click "Add to Week" to get started!
+          No activities yet. Click "Add to Week" to get started!
         </p>
       </div>
     );
@@ -106,7 +106,7 @@ export function PlanEntriesList({ entries, categories, onEdit, onDelete }: PlanE
                 </button>
                 <button
                   onClick={() => {
-                    if (window.confirm('Are you sure you want to delete this entry?')) {
+                    if (window.confirm('Are you sure you want to delete this activity?')) {
                       onDelete(entry.id);
                     }
                   }}

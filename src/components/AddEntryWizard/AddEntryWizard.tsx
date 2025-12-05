@@ -111,7 +111,7 @@ export function AddEntryWizard({ categories, onClose, onComplete, initialEntry, 
         {/* Header with close button */}
         <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
           <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
-            {isEditing ? 'Edit Entry' : 'Add to Week'}
+            {isEditing ? 'Edit Activity' : 'Add to Week'}
           </h2>
           <button
             onClick={onClose}
@@ -237,7 +237,7 @@ export function AddEntryWizard({ categories, onClose, onComplete, initialEntry, 
                     : 'bg-gray-300 dark:bg-gray-700 text-gray-500 dark:text-gray-400 cursor-not-allowed'
                 }`}
               >
-                {isEditing ? 'Update Entry' : 'Add to Week'}
+                {isEditing ? 'Update Activity' : 'Add to Week'}
               </button>
             )}
           </div>

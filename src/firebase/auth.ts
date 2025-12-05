@@ -4,11 +4,14 @@ import {
   signOut,
   signInWithPopup,
   GoogleAuthProvider,
+  deleteUser,
   type User as FirebaseUser,
 } from 'firebase/auth';
 import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
 import { auth, db } from './config';
 import type { User } from '../types/user';
+import { seedDefaultCategories } from './seedCategories';
+import { deleteUserData } from './firestore';
 
 const googleProvider = new GoogleAuthProvider();
 
@@ -93,6 +96,22 @@ export async function logOut() {
 }
 
 /**
+ * Delete user account and all associated data
+ */
+export async function deleteAccount(userId: string) {
+  const user = auth.currentUser;
+  if (!user) {
+    throw new Error('No user is currently signed in');
+  }
+
+  // Delete all user data from Firestore
+  await deleteUserData(userId);
+
+  // Delete the user account from Firebase Auth
+  await deleteUser(user);
+}
+
+/**
  * Create or update user document in Firestore
  */
 async function createUserDocument(
@@ -115,6 +134,9 @@ async function createUserDocument(
     };
     
     await setDoc(userRef, userData);
+    
+    // Seed default categories for new users
+    await seedDefaultCategories(firebaseUser.uid);
   }
 }
 

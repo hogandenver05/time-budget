@@ -2,7 +2,6 @@ import type { ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { useTheme } from '../hooks/useTheme';
-import { logOut } from '../firebase/auth';
 
 interface LayoutProps {
   children: ReactNode;
@@ -13,15 +12,6 @@ export function Layout({ children }: LayoutProps) {
   const navigate = useNavigate();
   // Initialize theme (hook applies theme automatically)
   useTheme();
-
-  const handleLogout = async () => {
-    try {
-      await logOut();
-      navigate('/auth');
-    } catch (error) {
-      console.error('Error signing out:', error);
-    }
-  };
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors">
@@ -34,18 +24,26 @@ export function Layout({ children }: LayoutProps) {
                 <h1 className="text-xl font-bold text-gray-900 dark:text-white">
                   Time Budget
                 </h1>
-                {user && (
-                  <span className="ml-3 text-sm text-gray-500 dark:text-gray-400">
-                    {user.displayName || user.email}
-                  </span>
-                )}
               </div>
               <div className="flex items-center gap-3">
                 <button
-                  onClick={handleLogout}
-                  className="px-4 py-2 text-sm font-medium text-white bg-red-600 hover:bg-red-700 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800"
+                  onClick={() => navigate('/profile')}
+                  className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 flex items-center gap-2"
                 >
-                  Logout
+                  <svg
+                    className="w-4 h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                    />
+                  </svg>
+                  {user?.displayName || user?.email || 'Profile'}
                 </button>
               </div>
             </div>

@@ -1,73 +1,144 @@
-# React + TypeScript + Vite
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+# Time Budget – Plan Your Week Like a Budget
 
-Currently, two official plugins are available:
+Time Budget is a visual weekly planning tool that helps you treat time like money. Each day has 24 hours, and you intentionally allocate those hours to activities with different levels of importance. The app’s core goal is to help you see how your week is balanced between what you **need** to do and what you **want** to do, revealing space you didn’t know you had.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+---
 
-## React Compiler
+## 🌗 Concept Overview
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Time Budget turns your week into seven 24‑hour pie charts.  
+Each pie represents a day, and each slice represents a planned activity such as:
 
-## Expanding the ESLint configuration
+- Sleep  
+- Work or School  
+- Meals  
+- Exercise  
+- Community  
+- Hobbies (for example Guitar)  
+- Relationships  
+- Custom categories  
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+You assign each activity a **priority**:
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- **Need** – non‑negotiable time you intend to protect  
+- **Want** – flexible time you want to make space for  
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+Everything else automatically appears as **Free Time**.
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+You build your ideal week through a simple guided flow:
+
+1. **What**  
+   Pick a category or create your own. Optionally add a label like “Guitar”.
+2. **Importance**  
+   Choose: Is this a Need or a Want?
+3. **When**  
+   Select days of the week using S M T W T F S chips.
+4. **How Long**  
+   Specify time per day (duration or start/end times).
+
+The result is a visual distribution of your week that highlights:
+- How much time is going to needs versus wants  
+- Where your unallocated pockets of time are  
+- Whether your week aligns with your values and priorities  
+
+---
+
+## 🏗️ Tech Stack
+
+- **Vite + Rolldown** (React + TypeScript)  
+- **Firebase Authentication**  
+- **Firestore (Spark Plan)**  
+- **Tailwind CSS**  
+- **Recharts** (for the pie charts)  
+
+---
+
+## 📁 Project Structure (planned)
+
+```
+/src
+  /components
+    PieChartDay.tsx
+    AddEntryWizard/
+  /pages
+    WeeklyView.tsx
+    Auth.tsx
+  /firebase
+    config.ts
+    firestore.ts
+  /types
+    plan.ts
+    category.ts
+  /utils
+    time.ts
+    aggregation.ts
+
+public/
+vite.config.ts
+tailwind.config.js
+README.md
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+---
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## 🔒 Firestore Data Model
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+**Users**  
+`users/{userId}`  
+- displayName  
+- email  
+- createdAt  
+
+**Categories**  
+`users/{userId}/categories/{categoryId}`  
+- name  
+- color  
+- builtIn  
+- archived  
+
+**Plan Entries**  
+`users/{userId}/planEntries/{entryId}`  
+- categoryId  
+- label  
+- priority ("need" | "want")  
+- daysOfWeek: number[]  
+- minutesPerDay  
+- startTimeLocal (optional)  
+- endTimeLocal (optional)  
+- createdAt  
+
+---
+
+## 🚀 Features (Two‑Week MVP)
+
+### Week 1
+- Authentication  
+- Seeding default categories  
+- Displaying seven daily pie charts  
+- Aggregating plan entries into daily pies  
+
+### Week 2
+- Multi‑step “Add to Week” wizard  
+- Create custom categories  
+- Edit/delete plan entries  
+- Simple weekly summary  
+
+---
+
+## 📦 Installation
+
+```sh
+npm install
+npm run dev
 ```
+
+Make sure you create a Firebase project and add your web config inside `/src/firebase/config.ts`.
+
+---
+
+## 🧪 Development Notes
+
+- Use the “Add to Week” button on the Weekly View to start creating your plan.
+- All pies update live as entries are added, edited, or removed.
+- Schedule‑style daily timelines will be added later but rely on the same data.

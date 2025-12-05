@@ -14,11 +14,7 @@ export function AuthRedirect() {
   }
 
   if (user) {
-    return (
-      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', flexDirection: 'column', gap: '1rem' }}>
-        <p>You are logged in as {user.email}</p>
-      </div>
-    );
+    return <Navigate to="/" replace />;
   }
 
   return <Auth />;
