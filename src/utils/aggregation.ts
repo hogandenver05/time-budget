@@ -23,12 +23,12 @@ export interface DayBreakdown {
 /**
  * Aggregate plan entries into daily totals by category
  * 
- * @param planEntries - Array of plan entries
+ * @param activities - Array of plan entries
  * @param categories - Map of categoryId to Category for lookups
  * @returns Array of day breakdowns (one for each day of the week)
  */
-export function aggregatePlanEntries(
-  planEntries: (PlanEntry & { id: string })[],
+export function aggregateActivities(
+  activities: (PlanEntry & { id: string })[],
   categories: Map<string, Category & { id: string }>
 ): DayBreakdown[] {
   // Initialize breakdowns for all 7 days
@@ -48,7 +48,7 @@ export function aggregatePlanEntries(
   }
 
   // Process each plan entry
-  for (const entry of planEntries) {
+  for (const entry of activities) {
     const category = categories.get(entry.categoryId);
     if (!category) {
       // Skip entries with missing categories

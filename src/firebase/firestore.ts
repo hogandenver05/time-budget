@@ -94,9 +94,9 @@ export async function deleteCategory(userId: string, categoryId: string): Promis
 /**
  * Get all plan entries for a user
  */
-export async function getPlanEntries(userId: string): Promise<(PlanEntry & { id: string })[]> {
-  const planEntriesRef = collection(db, 'users', userId, 'planEntries');
-  const snapshot = await getDocs(planEntriesRef);
+export async function getActivities(userId: string): Promise<(PlanEntry & { id: string })[]> {
+  const activitiesRef = collection(db, 'users', userId, 'planEntries');
+  const snapshot = await getDocs(activitiesRef);
   
   return snapshot.docs.map((doc) => {
     const data = doc.data();
@@ -139,8 +139,8 @@ export async function createPlanEntry(
   userId: string,
   entry: Omit<PlanEntry, 'createdAt' | 'updatedAt'>
 ): Promise<string> {
-  const planEntriesRef = collection(db, 'users', userId, 'planEntries');
-  const newEntryRef = doc(planEntriesRef);
+  const activitiesRef = collection(db, 'users', userId, 'planEntries');
+  const newEntryRef = doc(activitiesRef);
   
   const entryData = {
     categoryId: entry.categoryId,
@@ -209,9 +209,9 @@ export async function deleteUserData(userId: string): Promise<void> {
   await Promise.all(categoryDeletes);
 
   // Delete all plan entries
-  const planEntriesRef = collection(db, 'users', userId, 'planEntries');
-  const planEntriesSnapshot = await getDocs(planEntriesRef);
-  const entryDeletes = planEntriesSnapshot.docs.map((doc) => deleteDoc(doc.ref));
+  const activitiesRef = collection(db, 'users', userId, 'planEntries');
+  const activitiesSnapshot = await getDocs(activitiesRef);
+  const entryDeletes = activitiesSnapshot.docs.map((doc) => deleteDoc(doc.ref));
   await Promise.all(entryDeletes);
 
   // Delete user document

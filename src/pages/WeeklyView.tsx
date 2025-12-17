@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../hooks/useAuth';
 import { getCategories, createCategory, createPlanEntry, updatePlanEntry } from '../firebase/firestore';
-import { getPlanEntries } from '../firebase/firestore';
-import { aggregatePlanEntries } from '../utils/aggregation';
+import { getActivities } from '../firebase/firestore';
+import { aggregateActivities } from '../utils/aggregation';
 import { calculateWeeklySummary } from '../utils/summary';
 import { PieChartDay } from '../components/PieChartDay';
 import { WeeklySummary as WeeklySummaryComponent } from '../components/WeeklySummary';
@@ -42,7 +42,7 @@ function WeeklyView() {
       // Fetch categories and plan entries in parallel
       const [categories, entries] = await Promise.all([
         getCategories(user.uid),
-        getPlanEntries(user.uid),
+        getActivities(user.uid),
       ]);
 
       // Convert categories array to Map for efficient lookups
@@ -54,7 +54,7 @@ function WeeklyView() {
       setCategoriesList(categories);
 
       // Aggregate plan entries into daily breakdowns
-      const breakdowns = aggregatePlanEntries(entries, categoriesMap);
+      const breakdowns = aggregateActivities(entries, categoriesMap);
       setDayBreakdowns(breakdowns);
 
       // Calculate weekly summary

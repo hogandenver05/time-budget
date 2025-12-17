@@ -98,7 +98,7 @@ README.md
 - archived  
 
 **Plan Entries**  
-`users/{userId}/planEntries/{entryId}`  
+`users/{userId}/activities/{entryId}`  
 - categoryId  
 - label  
 - priority ("need" | "want")  

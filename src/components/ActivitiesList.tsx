@@ -3,14 +3,14 @@ import type { Category } from '../types/category';
 
 const DAY_ABBREVIATIONS = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
 
-interface PlanEntriesListProps {
+interface ActivitiesListProps {
   entries: (PlanEntry & { id: string })[];
   categories: Map<string, Category & { id: string }>;
   onEdit: (entry: PlanEntry & { id: string }) => void;
   onDelete: (entryId: string) => void;
 }
 
-export function PlanEntriesList({ entries, categories, onEdit, onDelete }: PlanEntriesListProps) {
+export function ActivitiesList({ entries, categories, onEdit, onDelete }: ActivitiesListProps) {
   const formatTime = (minutes: number): string => {
     const hours = Math.floor(minutes / 60);
     const mins = minutes % 60;

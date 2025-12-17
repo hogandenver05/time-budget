@@ -2,8 +2,8 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { getCategories, deletePlanEntry } from '../firebase/firestore';
-import { getPlanEntries } from '../firebase/firestore';
-import { PlanEntriesList } from '../components/PlanEntriesList';
+import { getActivities } from '../firebase/firestore';
+import { ActivitiesList } from '../components/ActivitiesList';
 import { AddEntryWizard, type WizardState } from '../components/AddEntryWizard/AddEntryWizard';
 import { createPlanEntry, updatePlanEntry, createCategory } from '../firebase/firestore';
 import { LoadingSpinner } from '../components/LoadingSpinner';
@@ -12,11 +12,11 @@ import type { PlanEntry } from '../types/plan';
 
 const DAY_ABBREVIATIONS = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
 
-function PlanEntriesPage() {
+function ActivitiesPage() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [categoriesList, setCategoriesList] = useState<(Category & { id: string })[]>([]);
-  const [planEntries, setPlanEntries] = useState<(PlanEntry & { id: string })[]>([]);
+  const [activities, setActivities] = useState<(PlanEntry & { id: string })[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showWizard, setShowWizard] = useState(false);
@@ -37,11 +37,11 @@ function PlanEntriesPage() {
 
       const [categories, entries] = await Promise.all([
         getCategories(user.uid),
-        getPlanEntries(user.uid),
+        getActivities(user.uid),
       ]);
 
       setCategoriesList(categories);
-      setPlanEntries(entries);
+      setActivities(entries);
     } catch (err: any) {
       setError(err.message || 'Failed to load data');
     } finally {
@@ -130,7 +130,7 @@ function PlanEntriesPage() {
     );
   }
 
-  if (error && !planEntries.length) {
+  if (error && !activities.length) {
     return (
       <div className="max-w-2xl mx-auto">
         <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-6">
@@ -227,8 +227,8 @@ function PlanEntriesPage() {
 
       {/* Activities List */}
       <div>
-        <PlanEntriesList
-          entries={planEntries}
+        <ActivitiesList
+          entries={activities}
           categories={new Map(categoriesList.map((cat) => [cat.id, cat]))}
           onEdit={handleEditEntry}
           onDelete={handleDeleteEntry}
@@ -252,5 +252,5 @@ function PlanEntriesPage() {
   );
 }
 
-export default PlanEntriesPage;
+export default ActivitiesPage;
 

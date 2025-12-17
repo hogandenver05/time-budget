@@ -1,6 +1,6 @@
 import { createBrowserRouter } from 'react-router-dom';
 import WeeklyView from './pages/WeeklyView';
-import PlanEntriesPage from './pages/PlanEntriesPage';
+import ActivitiesPage from './pages/ActivitiesPage';
 import ProfilePage from './pages/ProfilePage';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { AuthRedirect } from './components/AuthRedirect';
@@ -22,7 +22,7 @@ export const router = createBrowserRouter([
     element: (
       <ProtectedRoute>
         <Layout>
-          <PlanEntriesPage />
+          <ActivitiesPage />
         </Layout>
       </ProtectedRoute>
     ),

@@ -16,12 +16,12 @@ export interface WeeklySummary {
 /**
  * Calculate weekly summary statistics from plan entries
  * 
- * @param planEntries - Array of plan entries for the week
+ * @param activities - Array of plan entries for the week
  * @param categories - Map of categoryId to Category for lookups
  * @returns Weekly summary statistics
  */
 export function calculateWeeklySummary(
-  planEntries: (PlanEntry & { id: string })[],
+  activities: (PlanEntry & { id: string })[],
   categories: Map<string, Category & { id: string }>
 ): WeeklySummary {
   const TOTAL_WEEKLY_MINUTES = 7 * 24 * 60; // 7 days * 24 hours * 60 minutes = 10,080 minutes
@@ -31,7 +31,7 @@ export function calculateWeeklySummary(
   const categoryMinutes = new Map<string, number>();
 
   // Process each plan entry
-  for (const entry of planEntries) {
+  for (const entry of activities) {
     const category = categories.get(entry.categoryId);
     if (!category) {
       continue; // Skip entries with missing categories
