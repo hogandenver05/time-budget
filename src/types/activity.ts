@@ -1,6 +1,6 @@
 export type Priority = 'need' | 'want';
 
-export interface PlanEntry {
+export interface Activity {
   categoryId: string;
   label?: string;
   priority: Priority;

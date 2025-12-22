@@ -21,7 +21,7 @@ export function Step3When({ state, updateState }: Step3WhenProps) {
   };
 
   const selectWeekdays = () => {
-    updateState({ daysOfWeek: [1, 2, 3, 4, 5] }); // Monday through Friday
+    updateState({ daysOfWeek: [1, 2, 3, 4, 5] });
   };
 
   const clearDays = () => {

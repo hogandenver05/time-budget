@@ -4,7 +4,7 @@ import { Step2Importance } from './Step2Importance';
 import { Step3When } from './Step3When';
 import { Step4HowLong } from './Step4HowLong';
 import type { Category } from '../../types/category';
-import type { Priority, PlanEntry } from '../../types/plan';
+import type { Priority, Activity } from '../../types/activity';
 
 export interface WizardState {
   step: number;
@@ -23,7 +23,7 @@ interface AddEntryWizardProps {
   categories: (Category & { id: string })[];
   onClose: () => void;
   onComplete: (state: WizardState) => Promise<void>;
-  initialEntry?: (PlanEntry & { id: string }) | null;
+  initialEntry?: (Activity & { id: string }) | null;
   entryId?: string | null;
 }
 

@@ -1,5 +1,5 @@
 import type { WizardState } from './AddEntryWizard';
-import type { Priority } from '../../types/plan';
+import type { Priority } from '../../types/activity';
 
 interface Step2ImportanceProps {
   state: WizardState;

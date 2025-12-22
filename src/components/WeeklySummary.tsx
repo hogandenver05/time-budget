@@ -66,7 +66,7 @@ export function WeeklySummary({ summary, onClick, onAddEntry }: WeeklySummaryPro
           <div>
             <div className="text-sm font-medium text-gray-600 dark:text-gray-400">Free Time</div>
             <div className="text-xs text-gray-500 dark:text-gray-500 mt-0.5">
-              {formatPercentage(summary.freeTimePercentage)} of week
+              {formatPercentage(summary.freeTimePercentage)} of the week
             </div>
           </div>
           <div className="text-xl font-bold text-gray-700 dark:text-gray-300">
@@ -132,7 +132,7 @@ export function WeeklySummary({ summary, onClick, onAddEntry }: WeeklySummaryPro
           }}
           className="w-full px-4 py-2 text-sm text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium transition-colors"
         >
-          Manage Activities →
+          Manage My Activities →
         </button>
       </div>
     </div>

@@ -1,4 +1,4 @@
-import type { PlanEntry } from '../types/plan';
+import type { Activity } from '../types/activity';
 import type { Category } from '../types/category';
 
 export interface WeeklySummary {
@@ -21,7 +21,7 @@ export interface WeeklySummary {
  * @returns Weekly summary statistics
  */
 export function calculateWeeklySummary(
-  activities: (PlanEntry & { id: string })[],
+  activities: (Activity & { id: string })[],
   categories: Map<string, Category & { id: string }>
 ): WeeklySummary {
   const TOTAL_WEEKLY_MINUTES = 7 * 24 * 60; // 7 days * 24 hours * 60 minutes = 10,080 minutes
@@ -30,7 +30,7 @@ export function calculateWeeklySummary(
   let totalWantMinutes = 0;
   const categoryMinutes = new Map<string, number>();
 
-  // Process each plan entry
+  // Process each activity
   for (const entry of activities) {
     const category = categories.get(entry.categoryId);
     if (!category) {

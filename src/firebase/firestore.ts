@@ -10,7 +10,7 @@ import {
 } from 'firebase/firestore';
 import { db } from './config';
 import type { Category } from '../types/category';
-import type { PlanEntry } from '../types/plan';
+import type { Activity } from '../types/activity';
 
 // ============================================================================
 // Categories
@@ -94,7 +94,7 @@ export async function deleteCategory(userId: string, categoryId: string): Promis
 /**
  * Get all plan entries for a user
  */
-export async function getActivities(userId: string): Promise<(PlanEntry & { id: string })[]> {
+export async function getActivities(userId: string): Promise<(Activity & { id: string })[]> {
   const activitiesRef = collection(db, 'users', userId, 'planEntries');
   const snapshot = await getDocs(activitiesRef);
   
@@ -106,16 +106,16 @@ export async function getActivities(userId: string): Promise<(PlanEntry & { id: 
       createdAt: data.createdAt?.toDate() ?? new Date(),
       updatedAt: data.updatedAt?.toDate() ?? new Date(),
     };
-  }) as (PlanEntry & { id: string })[];
+  }) as (Activity & { id: string })[];
 }
 
 /**
- * Get a single plan entry by ID
+ * Get a single activity by ID
  */
-export async function getPlanEntry(
+export async function getActivity(
   userId: string,
   entryId: string
-): Promise<(PlanEntry & { id: string }) | null> {
+): Promise<(Activity & { id: string }) | null> {
   const entryRef = doc(db, 'users', userId, 'planEntries', entryId);
   const snapshot = await getDoc(entryRef);
   
@@ -129,15 +129,15 @@ export async function getPlanEntry(
     ...data,
     createdAt: data.createdAt?.toDate() ?? new Date(),
     updatedAt: data.updatedAt?.toDate() ?? new Date(),
-  } as PlanEntry & { id: string };
+  } as Activity & { id: string };
 }
 
 /**
- * Create a new plan entry
+ * Create a new activity
  */
-export async function createPlanEntry(
+export async function createActivity(
   userId: string,
-  entry: Omit<PlanEntry, 'createdAt' | 'updatedAt'>
+  entry: Omit<Activity, 'createdAt' | 'updatedAt'>
 ): Promise<string> {
   const activitiesRef = collection(db, 'users', userId, 'planEntries');
   const newEntryRef = doc(activitiesRef);
@@ -159,12 +159,12 @@ export async function createPlanEntry(
 }
 
 /**
- * Update an existing plan entry
+ * Update an existing activity
  */
-export async function updatePlanEntry(
+export async function updateActivity(
   userId: string,
   entryId: string,
-  updates: Partial<Omit<PlanEntry, 'createdAt' | 'updatedAt'>> & { updatedAt?: never }
+  updates: Partial<Omit<Activity, 'createdAt' | 'updatedAt'>> & { updatedAt?: never }
 ): Promise<void> {
   const entryRef = doc(db, 'users', userId, 'planEntries', entryId);
   const updateData: any = {
@@ -187,9 +187,9 @@ export async function updatePlanEntry(
 }
 
 /**
- * Delete a plan entry
+ * Delete a activity
  */
-export async function deletePlanEntry(userId: string, entryId: string): Promise<void> {
+export async function deleteActivity(userId: string, entryId: string): Promise<void> {
   const entryRef = doc(db, 'users', userId, 'planEntries', entryId);
   await deleteDoc(entryRef);
 }

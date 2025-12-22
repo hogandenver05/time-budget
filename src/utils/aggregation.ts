@@ -1,4 +1,4 @@
-import type { PlanEntry } from '../types/plan';
+import type { Activity } from '../types/activity';
 import type { Category } from '../types/category';
 
 /**
@@ -28,7 +28,7 @@ export interface DayBreakdown {
  * @returns Array of day breakdowns (one for each day of the week)
  */
 export function aggregateActivities(
-  activities: (PlanEntry & { id: string })[],
+  activities: (Activity & { id: string })[],
   categories: Map<string, Category & { id: string }>
 ): DayBreakdown[] {
   // Initialize breakdowns for all 7 days
@@ -47,7 +47,7 @@ export function aggregateActivities(
     dayCategoryMinutes.set(day, new Map());
   }
 
-  // Process each plan entry
+  // Process each activity
   for (const entry of activities) {
     const category = categories.get(entry.categoryId);
     if (!category) {

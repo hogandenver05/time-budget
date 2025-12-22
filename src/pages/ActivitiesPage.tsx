@@ -1,26 +1,24 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
-import { getCategories, deletePlanEntry } from '../firebase/firestore';
+import { getCategories, deleteActivity } from '../firebase/firestore';
 import { getActivities } from '../firebase/firestore';
 import { ActivitiesList } from '../components/ActivitiesList';
 import { AddEntryWizard, type WizardState } from '../components/AddEntryWizard/AddEntryWizard';
-import { createPlanEntry, updatePlanEntry, createCategory } from '../firebase/firestore';
+import { createActivity, updateActivity, createCategory } from '../firebase/firestore';
 import { LoadingSpinner } from '../components/LoadingSpinner';
 import type { Category } from '../types/category';
-import type { PlanEntry } from '../types/plan';
-
-const DAY_ABBREVIATIONS = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+import type { Activity } from '../types/activity';
 
 function ActivitiesPage() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [categoriesList, setCategoriesList] = useState<(Category & { id: string })[]>([]);
-  const [activities, setActivities] = useState<(PlanEntry & { id: string })[]>([]);
+  const [activities, setActivities] = useState<(Activity & { id: string })[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showWizard, setShowWizard] = useState(false);
-  const [editingEntry, setEditingEntry] = useState<(PlanEntry & { id: string }) | null>(null);
+  const [editingEntry, setEditingEntry] = useState<(Activity & { id: string }) | null>(null);
 
   useEffect(() => {
     if (user) {
@@ -69,7 +67,7 @@ function ActivitiesPage() {
       }
 
       if (editingEntry) {
-        await updatePlanEntry(user.uid, editingEntry.id, {
+        await updateActivity(user.uid, editingEntry.id, {
           categoryId,
           label: wizardState.label || undefined,
           priority: wizardState.priority!,
@@ -79,7 +77,7 @@ function ActivitiesPage() {
           endTimeLocal: wizardState.endTimeLocal || undefined,
         });
       } else {
-        await createPlanEntry(user.uid, {
+        await createActivity(user.uid, {
           categoryId,
           label: wizardState.label || undefined,
           priority: wizardState.priority!,
@@ -99,7 +97,7 @@ function ActivitiesPage() {
     }
   };
 
-  const handleEditEntry = (entry: PlanEntry & { id: string }) => {
+  const handleEditEntry = (entry: Activity & { id: string }) => {
     setEditingEntry(entry);
     setShowWizard(true);
   };
@@ -109,7 +107,7 @@ function ActivitiesPage() {
 
     try {
       setError(null);
-      await deletePlanEntry(user.uid, entryId);
+      await deleteActivity(user.uid, entryId);
       await loadData();
     } catch (err: any) {
       setError(err.message || 'Failed to delete activity');
@@ -191,7 +189,7 @@ function ActivitiesPage() {
             Back to Weekly View
           </button>
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-            Manage Activities
+            Manage My Activities
           </h1>
           <p className="text-gray-600 dark:text-gray-400">
             Edit, delete, or add new activities

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../hooks/useAuth';
-import { getCategories, createCategory, createPlanEntry, updatePlanEntry } from '../firebase/firestore';
+import { getCategories, createCategory, createActivity, updateActivity } from '../firebase/firestore';
 import { getActivities } from '../firebase/firestore';
 import { aggregateActivities } from '../utils/aggregation';
 import { calculateWeeklySummary } from '../utils/summary';
@@ -10,7 +10,7 @@ import { AddEntryWizard, type WizardState } from '../components/AddEntryWizard/A
 import { LoadingSpinner } from '../components/LoadingSpinner';
 import { Skeleton } from '../components/Skeleton';
 import type { Category } from '../types/category';
-import type { PlanEntry } from '../types/plan';
+import type { Activity } from '../types/activity';
 import type { DayBreakdown } from '../utils/aggregation';
 import type { WeeklySummary } from '../utils/summary';
 
@@ -24,7 +24,7 @@ function WeeklyView() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showWizard, setShowWizard] = useState(false);
-  const [editingEntry, setEditingEntry] = useState<(PlanEntry & { id: string }) | null>(null);
+  const [editingEntry, setEditingEntry] = useState<(Activity & { id: string }) | null>(null);
 
   useEffect(() => {
     if (user) {
@@ -90,7 +90,7 @@ function WeeklyView() {
 
       if (editingEntry) {
         // Update existing entry
-        await updatePlanEntry(user.uid, editingEntry.id, {
+        await updateActivity(user.uid, editingEntry.id, {
           categoryId,
           label: wizardState.label || undefined,
           priority: wizardState.priority!,
@@ -101,7 +101,7 @@ function WeeklyView() {
         });
       } else {
         // Create new entry
-        await createPlanEntry(user.uid, {
+        await createActivity(user.uid, {
           categoryId,
           label: wizardState.label || undefined,
           priority: wizardState.priority!,
