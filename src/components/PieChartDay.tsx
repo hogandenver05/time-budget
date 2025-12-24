@@ -1,4 +1,4 @@
-import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts';
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
 import type { DayBreakdown } from '../utils/aggregation';
 
 interface PieChartDayProps {
@@ -23,6 +23,24 @@ export function PieChartDay({ dayBreakdown, dayName }: PieChartDayProps) {
     value: cat.minutes,
     color: cat.categoryColor,
   }));
+  
+  // Derive a severity level from total minutes and map it to a shadow style
+  function getOverageSeverity(totalMinutes: number): "none" | "warning" | "danger" {
+    const minutesInDay = 24 * 60;
+    if (totalMinutes <= minutesInDay) return "none";
+    if (totalMinutes <= minutesInDay * 1.25) return "warning";
+    return "danger";
+  };
+  
+  const totalMinutes = chartData.reduce((sum, entry) => sum + entry.value, 0);
+  const overageSeverity = getOverageSeverity(totalMinutes);
+  const overageStyles: Record<typeof overageSeverity, string> = {
+    none: "",
+    warning:
+      "ring-2 ring-orange-400 shadow-[0_0_12px_rgba(251,146,60,0.5)]",
+    danger:
+      "ring-2 ring-red-500 shadow-[0_0_14px_rgba(239,68,68,0.6)]",
+  };
 
   // Custom tooltip
   const CustomTooltip = ({ active, payload }: any) => {
@@ -58,10 +76,38 @@ export function PieChartDay({ dayBreakdown, dayName }: PieChartDayProps) {
   }
 
   return (
-    <div className="p-4 sm:p-6 border border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 shadow-sm hover:shadow-md transition-all duration-200">
-      <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 text-center">
-        {dayName}
-      </h3>
+    <div className={[
+      "p-4 sm:p-6 border border-gray-200 dark:border-gray-700 rounded-xl",
+      "bg-white dark:bg-gray-800 shadow-sm hover:shadow-md",
+      "transition-all duration-200",
+      overageStyles[overageSeverity],
+    ].join(" ")}>
+    <h3 className="flex items-center justify-center gap-2 text-lg font-semibold text-gray-900 dark:text-white mb-4">
+      <span>{dayName}</span>
+      {overageSeverity !== "none" && (
+        <span
+          className={
+            overageSeverity === "warning"
+              ? "text-orange-300"
+              : "text-red-500"
+          }
+        >
+          <svg
+            className="w-5 h-5"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M12 7V12L14.5 13.5M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z"
+            />
+          </svg>
+        </span>
+      )}
+    </h3>
       <div className="mb-4">
         <ResponsiveContainer width="100%" height={200}>
           <PieChart>
