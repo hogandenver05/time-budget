@@ -31,7 +31,7 @@ export function WeeklySummary({ summary, onClick, onAddEntry }: WeeklySummaryPro
     if (onClick) {
       onClick();
     } else {
-      navigate('/entries');
+      navigate('/activities');
     }
   };
 
@@ -119,7 +119,7 @@ export function WeeklySummary({ summary, onClick, onAddEntry }: WeeklySummaryPro
               d="M12 4v16m8-8H4"
             />
           </svg>
-          Add to Week
+          Add Activity
         </button>
         <button
           onClick={(e) => {
@@ -127,7 +127,7 @@ export function WeeklySummary({ summary, onClick, onAddEntry }: WeeklySummaryPro
             if (onClick) {
               onClick();
             } else {
-              navigate('/entries');
+              navigate('/activities');
             }
           }}
           className="w-full px-4 py-2 text-sm text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium transition-colors"

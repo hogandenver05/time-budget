@@ -24,10 +24,11 @@ interface AddEntryWizardProps {
   onClose: () => void;
   onComplete: (state: WizardState) => Promise<void>;
   initialEntry?: (Activity & { id: string }) | null;
+  initialDaysOfWeek?: number[];
   entryId?: string | null;
 }
 
-export function AddEntryWizard({ categories, onClose, onComplete, initialEntry, entryId }: AddEntryWizardProps) {
+export function AddEntryWizard({ categories, onClose, onComplete, initialEntry, initialDaysOfWeek, entryId }: AddEntryWizardProps) {
   const isEditing = !!initialEntry && !!entryId;
   
   // Initialize state from entry if editing, otherwise use defaults
@@ -41,6 +42,7 @@ export function AddEntryWizard({ categories, onClose, onComplete, initialEntry, 
         label: initialEntry.label || '',
         priority: initialEntry.priority,
         daysOfWeek: initialEntry.daysOfWeek,
+
         minutesPerDay: initialEntry.minutesPerDay,
         startTimeLocal: initialEntry.startTimeLocal || null,
         endTimeLocal: initialEntry.endTimeLocal || null,
@@ -54,7 +56,7 @@ export function AddEntryWizard({ categories, onClose, onComplete, initialEntry, 
       categoryColor: '#6366f1',
       label: '',
       priority: null,
-      daysOfWeek: [],
+      daysOfWeek: initialDaysOfWeek ?? [],
       minutesPerDay: 0,
       startTimeLocal: null,
       endTimeLocal: null,
@@ -111,7 +113,7 @@ export function AddEntryWizard({ categories, onClose, onComplete, initialEntry, 
         {/* Header with close button */}
         <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
           <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
-            {isEditing ? 'Edit Activity' : 'Add to Week'}
+            {isEditing ? 'Edit Activity' : 'Add Activity'}
           </h2>
           <button
             onClick={onClose}
@@ -237,7 +239,7 @@ export function AddEntryWizard({ categories, onClose, onComplete, initialEntry, 
                     : 'bg-gray-300 dark:bg-gray-700 text-gray-500 dark:text-gray-400 cursor-not-allowed'
                 }`}
               >
-                {isEditing ? 'Update Activity' : 'Add to Week'}
+                {isEditing ? 'Update Activity' : 'Add Activity'}
               </button>
             )}
           </div>

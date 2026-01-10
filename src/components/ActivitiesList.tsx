@@ -49,7 +49,7 @@ export function ActivitiesList({ entries, categories, onEdit, onDelete }: Activi
           />
         </svg>
         <p className="text-gray-600 dark:text-gray-400">
-          No activities yet. Click "Add to Week" to get started!
+          No activities yet. Click "Add Activity" to get started!
         </p>
       </div>
     );
@@ -57,7 +57,6 @@ export function ActivitiesList({ entries, categories, onEdit, onDelete }: Activi
 
   return (
     <div>
-      <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Your Activities</h2>
       <div className="space-y-3">
         {entries.map((entry) => {
           const category = categories.get(entry.categoryId);
@@ -101,7 +100,7 @@ export function ActivitiesList({ entries, categories, onEdit, onDelete }: Activi
               <div className="flex gap-2 sm:flex-shrink-0">
                 <button
                   onClick={() => onEdit(entry)}
-                  className="px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white text-sm font-medium rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800"
+                  className="px-2 py-2 bg-primary-600 hover:bg-primary-700 text-white text-sm font-medium rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800"
                 >
                   <svg
                     className="w-5 h-5"
@@ -124,7 +123,7 @@ export function ActivitiesList({ entries, categories, onEdit, onDelete }: Activi
                       onDelete(entry.id);
                     }
                   }}
-                  className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-sm font-medium rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800"
+                  className="px-2 py-2 bg-red-600 hover:bg-red-700 text-white text-sm font-medium rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800"
                 >
                   <svg
                     className="w-5 h-5"

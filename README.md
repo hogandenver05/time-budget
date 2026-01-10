@@ -119,7 +119,7 @@ README.md
 - Aggregating plan entries into daily pies  
 
 ### Week 2
-- Multi‑step “Add to Week” wizard  
+- Multi‑step “Add Activity” wizard  
 - Create custom categories  
 - Edit/delete plan entries  
 - Simple weekly summary  
@@ -139,6 +139,6 @@ Make sure you create a Firebase project and add your web config inside `/src/fir
 
 ## 🧪 Development Notes
 
-- Use the “Add to Week” button on the Weekly View to start creating your plan.
+- Use the “Add Activity” button on the Weekly View to start creating your plan.
 - All pies update live as entries are added, edited, or removed.
 - Schedule‑style daily timelines will be added later but rely on the same data.

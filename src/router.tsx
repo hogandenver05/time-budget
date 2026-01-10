@@ -1,6 +1,7 @@
 import { createBrowserRouter } from 'react-router-dom';
 import WeeklyView from './pages/WeeklyView';
 import ActivitiesPage from './pages/ActivitiesPage';
+import DayDetailsPage from './pages/DayDetailsPage';
 import ProfilePage from './pages/ProfilePage';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { AuthRedirect } from './components/AuthRedirect';
@@ -18,11 +19,21 @@ export const router = createBrowserRouter([
     ),
   },
   {
-    path: '/entries',
+    path: '/activities',
     element: (
       <ProtectedRoute>
         <Layout>
           <ActivitiesPage />
+        </Layout>
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: '/day/:dayIndex',
+    element: (
+      <ProtectedRoute>
+        <Layout>
+          <DayDetailsPage />
         </Layout>
       </ProtectedRoute>
     ),

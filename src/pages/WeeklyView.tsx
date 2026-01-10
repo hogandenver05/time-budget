@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../hooks/useAuth';
+import { useNavigate } from 'react-router-dom';
 import { getCategories, createCategory, createActivity, updateActivity } from '../firebase/firestore';
 import { getActivities } from '../firebase/firestore';
 import { aggregateActivities } from '../utils/aggregation';
@@ -18,6 +19,7 @@ const DAY_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Frid
 
 function WeeklyView() {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [categoriesList, setCategoriesList] = useState<(Category & { id: string })[]>([]);
   const [dayBreakdowns, setDayBreakdowns] = useState<DayBreakdown[]>([]);
   const [weeklySummary, setWeeklySummary] = useState<WeeklySummary | null>(null);
@@ -132,7 +134,7 @@ function WeeklyView() {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] space-y-4">
         <LoadingSpinner size="lg" />
-        <p className="text-gray-600 dark:text-gray-400">Loading your weekly plan...</p>
+        <p className="text-gray-600 dark:text-gray-400">Loading your week...</p>
         <div className="w-full max-w-4xl space-y-4 mt-8">
           <Skeleton className="h-32 w-full" />
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
@@ -196,6 +198,7 @@ function WeeklyView() {
           {/* 7 days */}
           {dayBreakdowns.map((breakdown, index) => (
             <PieChartDay
+              onClick={() => navigate(`/day/${index}`)}
               key={breakdown.dayOfWeek}
               dayBreakdown={breakdown}
               dayName={DAY_NAMES[index]}
